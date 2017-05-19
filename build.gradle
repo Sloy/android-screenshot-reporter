@@ -29,9 +29,12 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.7.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.7.0'
     compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.android.tools.ddms:ddmlib:25.3.0'
 
     testCompile 'junit:junit:4.12'
     testCompile 'com.google.truth:truth:0.30'
+    testCompile 'commons-io:commons-io:2.5'
+    testCompile 'com.github.geowarin:docker-junit-rule:1.1.0'
 }
 
 test {
