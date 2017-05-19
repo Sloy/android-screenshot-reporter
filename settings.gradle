@@ -1,2 +1,2 @@
-rootProject.name = 'gradle-screenshot-reporter'
+include ':screenshot-reporter-plugin'
 

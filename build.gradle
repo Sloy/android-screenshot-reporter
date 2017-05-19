@@ -1,78 +1,17 @@
-apply plugin: 'kotlin'
-apply plugin: 'com.jfrog.artifactory'
-apply plugin: 'maven-publish'
-apply plugin: 'java-gradle-plugin'
-apply plugin: 'idea'
-
-
 buildscript {
-    ext.kotlin_version = '1.1.2-3'
     repositories {
         jcenter()
     }
     dependencies {
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.4.17"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
-sourceCompatibility = 1.7
-
-repositories {
-    jcenter()
-}
-
-dependencies {
-    compileOnly gradleApi()
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
-    compile 'com.squareup.okhttp3:okhttp:3.7.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.7.0'
-    compile 'com.google.code.gson:gson:2.8.0'
-    compile 'com.android.tools.ddms:ddmlib:25.3.0'
-
-    testCompile 'junit:junit:4.12'
-    testCompile 'com.google.truth:truth:0.30'
-    testCompile 'commons-io:commons-io:2.5'
-    testCompile 'com.github.geowarin:docker-junit-rule:1.1.0'
-}
-
-test {
-    testLogging {
-        events "passed", "skipped", "failed"
-        exceptionFormat "full"
-        showExceptions true
-        showStackTraces true
-        showCauses true
-        showStandardStreams true
+allprojects {
+    repositories {
+        jcenter()
     }
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            groupId 'com.schibsted'
-            artifactId 'gradle-screenshot-reporter'
-            version '1.0.2'
-
-            from components.java
-        }
-    }
-}
-
-artifactory {
-    contextUrl = 'https://artifacts.schibsted.io/artifactory'
-    publish {
-        repository {
-            repoKey = "libs-release-local"
-            username = System.getenv()['ARTIFACTORY_WRITER_USER']
-            password = System.getenv()['ARTIFACTORY_WRITER_PWD']
-        }
-        defaults {
-            publications('mavenJava')
-        }
-    }
-}
-sourceSets {
-    main.java.srcDirs += 'src/main/kotlin'
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
