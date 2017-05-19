@@ -1,3 +1,3 @@
-# gradle-screenshot-reporter
+# android-screenshot-reporter
 
 TODO("not implemented")

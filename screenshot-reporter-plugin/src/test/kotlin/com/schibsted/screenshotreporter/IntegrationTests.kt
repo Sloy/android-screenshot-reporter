@@ -28,7 +28,7 @@ class IntegrationTests {
     fun task_runs() {
         buildFile.writeText(
                 """plugins {
-                            id 'com.schibsted.gradle-screenshot-reporter'
+                            id 'com.schibsted.android-screenshot-reporter'
                         }
                 """
         )

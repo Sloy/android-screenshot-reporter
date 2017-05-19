@@ -10,7 +10,7 @@ class ScreenshotReporterPluginTest {
     @Test
     fun greeterPluginAddsGreetingTaskToProject() {
         val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("com.schibsted.gradle-screenshot-reporter")
+        project.pluginManager.apply("com.schibsted.android-screenshot-reporter")
 
         assertTrue(project.tasks.getByName(ScreenshotReporterPlugin.TASK_NAME) is ScreenshotReporterTask)
     }
