@@ -8,7 +8,7 @@ import org.junit.Test
 class ScreenshotReporterPluginTest {
 
     @Test
-    fun greeterPluginAddsGreetingTaskToProject() {
+    fun `adds task to project`() {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("com.schibsted.android-screenshot-reporter")
 
