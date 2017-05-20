@@ -10,8 +10,8 @@ open class ScreenshotReporterPlugin : Plugin<Project> {
     }
 
     override fun apply(project: Project) {
-        val notifierTask = project.tasks.create(TASK_NAME, ScreenshotReporterTask::class.java)
-        project.tasks.add(notifierTask)
+        val reporterTask = project.tasks.create(TASK_NAME, ScreenshotReporterTask::class.java)
+        project.tasks.add(reporterTask)
     }
 
 }
