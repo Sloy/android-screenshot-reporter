@@ -18,7 +18,7 @@ class ScreenshotReporterTest {
     lateinit var inputTestFolder: File
     lateinit var nonExistentOutputFolder: File
 
-    val screenshotReporter = ScreenshotReporter()
+    val screenshotReporter = ScreenshotReporter("com.schibsted.screenshotreporter.testapp")
 
     @Before
     fun setUp() {
@@ -95,6 +95,13 @@ class ScreenshotReporterTest {
         assertWithMessage("Output folder has not been created")
                 .that(nonExistentOutputFolder.exists())
                 .isTrue()
+    }
+
+
+    @Test
+    fun `grant permission on marshmallow`() {
+        screenshotReporter.grantPermissions()
+        //WARNING: This test will never fail :( How can we check the behavior?
     }
 
     private fun givenOutputFolderHasOldFiles() {

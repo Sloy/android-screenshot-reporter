@@ -9,10 +9,16 @@ open class ScreenshotReporterTask : DefaultTask() {
     companion object {
         val REPORTS_FOLDER = "reports"
         val REPORTS_SUBFOLDER = "screenshots"
+        val TASK_NAME = "reportScreenshots"
     }
+
+    lateinit var appPackage: String
+
     @TaskAction
     fun reportScreenshots() {
-        ScreenshotReporter()
+        check(appPackage != null, { "appPackage parameter is not set" })
+
+        ScreenshotReporter(appPackage)
                 .reportScreenshots(project.buildDir.resolve(REPORTS_FOLDER).resolve(REPORTS_SUBFOLDER))
     }
 

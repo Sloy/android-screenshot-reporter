@@ -8,12 +8,12 @@ import java.time.Duration
 import java.util.concurrent.TimeUnit
 
 
-class ScreenshotReporter {
+class ScreenshotReporter(val appPackage: String) {
 
     companion object {
         val SDK = File(System.getenv("ANDROID_HOME"))
         val DEVICE_SCREENSHOT_DIR = "app_" + "test_screenshots"
-
+        val MARSHMALLOW_API_LEVEL = 23
     }
 
     fun reportScreenshots(outputDir: File) {
@@ -37,6 +37,20 @@ class ScreenshotReporter {
             val command = "rm -rf $externalPath"
 
             executeShellCommand(command, outputReceiver)
+        }
+    }
+
+    fun grantPermissions() {
+        val device = getRunningDevice(getAdb())
+        val apiLevel = device.getProperty("ro.build.version.sdk").toInt()
+        if (apiLevel >= MARSHMALLOW_API_LEVEL) {
+            val grantOutputReceiver = CollectingOutputReceiver()
+            device.executeShellCommand(
+                    "pm grant $appPackage android.permission.READ_EXTERNAL_STORAGE",
+                    grantOutputReceiver)
+            device.executeShellCommand(
+                    "pm grant $appPackage android.permission.WRITE_EXTERNAL_STORAGE",
+                    grantOutputReceiver)
         }
     }
 

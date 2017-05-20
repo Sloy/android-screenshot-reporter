@@ -1,5 +1,7 @@
 package com.sloydev.espresso
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.UiController
 import android.support.test.espresso.ViewAction
@@ -26,7 +28,13 @@ class ScreenshotAction(val file: File, val screenshotTaker: ScreenshotTaker) : V
     }
 
     override fun perform(uiController: UiController, view: View) {
-        screenshotTaker.take(getCurrentActivity(view), file)
+        val activity = getCurrentActivity(view)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (activity.checkSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE") != PackageManager.PERMISSION_GRANTED) {
+                throw IllegalStateException("Can't take screenshots without WRITE_EXTERNAL_STORAGE permission")
+            }
+        }
+        screenshotTaker.take(activity, file)
     }
 
 
