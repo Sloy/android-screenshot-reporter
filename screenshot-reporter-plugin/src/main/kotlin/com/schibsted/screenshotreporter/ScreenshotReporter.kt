@@ -20,6 +20,7 @@ class ScreenshotReporter {
     }
 
     fun reportScreenshots(outputDir: File) {
+        outputDir.mkdirs()
         outputDir.listFiles().forEach {
             println("delete ${it.name}")
             it.deleteRecursively()

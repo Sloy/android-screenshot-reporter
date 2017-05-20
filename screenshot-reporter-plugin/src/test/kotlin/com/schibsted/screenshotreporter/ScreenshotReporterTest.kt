@@ -16,6 +16,7 @@ class ScreenshotReporterTest {
 
     lateinit var outputFolder: File
     lateinit var inputTestFolder: File
+    lateinit var nonExistentOutputFolder: File
 
     val screenshotReporter = ScreenshotReporter()
 
@@ -23,6 +24,7 @@ class ScreenshotReporterTest {
     fun setUp() {
         outputFolder = temporaryFolder.newFolder("outputs")
         inputTestFolder = temporaryFolder.newFolder("inputs")
+        nonExistentOutputFolder = temporaryFolder.root.resolve("another_output")
     }
 
     @Test
@@ -80,6 +82,19 @@ class ScreenshotReporterTest {
 
         assertThat(exportedFiles)
                 .isEmpty()
+    }
+
+    @Test
+    fun `creates output folder when doesn't exist`() {
+        assertWithMessage("Output folder already existed")
+                .that(nonExistentOutputFolder.exists())
+                .isFalse()
+
+        screenshotReporter.reportScreenshots(nonExistentOutputFolder)
+
+        assertWithMessage("Output folder has not been created")
+                .that(nonExistentOutputFolder.exists())
+                .isTrue()
     }
 
     private fun givenOutputFolderHasOldFiles() {
