@@ -6,9 +6,6 @@ import com.android.ddmlib.SyncService.getNullProgressMonitor
 import java.io.File
 import java.time.Duration
 import java.util.concurrent.TimeUnit
-import com.android.ddmlib.CollectingOutputReceiver
-
-
 
 
 class ScreenshotReporter {
@@ -29,6 +26,8 @@ class ScreenshotReporter {
         val adb = getAdb()
         val singleDevice = getRunningDevice(adb)
         pullDirectory(singleDevice, DEVICE_SCREENSHOT_DIR, outputDir)
+
+        println("Wrote report to ${outputDir.resolve(DEVICE_SCREENSHOT_DIR).absolutePath}")
     }
 
     fun cleanScreenshotsFromDevice() {

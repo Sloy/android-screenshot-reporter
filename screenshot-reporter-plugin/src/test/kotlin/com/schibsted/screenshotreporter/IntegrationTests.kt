@@ -1,6 +1,7 @@
 package com.schibsted.screenshotreporter
 
 import com.google.common.truth.Truth.assertThat
+import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Before
@@ -26,25 +27,47 @@ class IntegrationTests {
 
     @Test
     fun task_runs() {
-        buildFile.writeText(
-                """plugins {
-                            id 'com.schibsted.android-screenshot-reporter'
-                        }
-                """
-        )
+        givenBuildFileWithPlugin()
 
-        val runner = GradleRunner.create()
-                .withProjectDir(projectDir)
-                .withPluginClasspath()
-                .withArguments(ScreenshotReporterPlugin.TASK_NAME)
-
-        val result = runner.build()
-
-        println(result.output)
+        val result: BuildResult = runTask()
 
         val task = result.task(":${ScreenshotReporterPlugin.TASK_NAME}")
         val taskOutcome = task.outcome
         assertThat(taskOutcome).isEqualTo(TaskOutcome.SUCCESS)
+    }
+
+    @Test
+    fun task_generates_output_files() {
+        givenBuildFileWithPlugin()
+
+        runTask()
+
+        val outputReportDirectory = projectDir.resolve("build")
+                .resolve(ScreenshotReporterTask.REPORTS_FOLDER)
+                .resolve(ScreenshotReporterTask.REPORTS_SUBFOLDER)
+                .resolve(ScreenshotReporter.DEVICE_SCREENSHOT_DIR)
+        assertThat(outputReportDirectory.exists())
+                .isTrue()
+
+    }
+
+    private fun givenBuildFileWithPlugin() {
+        buildFile.writeText(
+                """plugins {
+                                id 'com.schibsted.android-screenshot-reporter'
+                            }
+                    """
+        )
+    }
+
+    private fun runTask(): BuildResult {
+        val runner = GradleRunner.create()
+                .withProjectDir(projectDir)
+                .withPluginClasspath()
+                .withArguments(ScreenshotReporterPlugin.TASK_NAME)
+        val result = runner.build()
+        println(result.output)
+        return result
     }
 
 }
