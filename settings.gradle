@@ -1,2 +1,2 @@
-include ':screenshot-reporter-plugin', ':test-app'
+include ':screenshot-reporter-plugin', ':test-app', ':screenshot-reporter-espresso'
 

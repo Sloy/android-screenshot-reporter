@@ -52,8 +52,8 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId 'com.schibsted'
-            artifactId 'gradle-screenshot-reporter'
-            version '1.0.2'
+            artifactId 'android-screenshot-reporter'
+            version '0.0.1'
 
             from components.java
         }
