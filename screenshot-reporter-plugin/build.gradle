@@ -1,5 +1,4 @@
 apply plugin: 'kotlin'
-apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'java-gradle-plugin'
 apply plugin: 'idea'
@@ -53,8 +52,8 @@ test {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            groupId 'com.schibsted'
-            artifactId 'android-screenshot-reporter'
+            groupId 'com.sloydev'
+            artifactId 'screenshot-reporter-plugin'
             version '0.0.1'
 
             from components.java
@@ -62,19 +61,6 @@ publishing {
     }
 }
 
-artifactory {
-    contextUrl = 'https://artifacts.schibsted.io/artifactory'
-    publish {
-        repository {
-            repoKey = "libs-release-local"
-            username = System.getenv()['ARTIFACTORY_WRITER_USER']
-            password = System.getenv()['ARTIFACTORY_WRITER_PWD']
-        }
-        defaults {
-            publications('mavenJava')
-        }
-    }
-}
 sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
 }

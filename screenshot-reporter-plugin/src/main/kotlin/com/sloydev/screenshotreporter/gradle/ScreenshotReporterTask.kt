@@ -1,4 +1,4 @@
-package com.schibsted.screenshotreporter
+package com.sloydev.screenshotreporter.gradle
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction

@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.schibsted.android-screenshot-reporter'
+apply plugin: 'com.sloydev.screenshot-reporter'
 
 buildscript {
     ext.kotlin_version = '1.1.2-3'
@@ -8,7 +8,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.schibsted:android-screenshot-reporter:0.0.1'
+        classpath 'com.sloydev:screenshot-reporter-plugin:0.0.1'
     }
 }
 
@@ -17,7 +17,7 @@ android {
     buildToolsVersion "25.0.3"
 
     defaultConfig {
-        applicationId "com.schibsted.screenshotreporter.testapp"
+        applicationId "com.sloydev.screenshotreporter.testapp"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1

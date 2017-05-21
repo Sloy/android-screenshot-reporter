@@ -1,4 +1,4 @@
-package com.schibsted.screenshotreporter
+package com.sloydev.screenshotreporter.gradle
 
 import com.android.build.gradle.AppExtension
 import org.gradle.api.Plugin
@@ -9,7 +9,7 @@ open class ScreenshotReporterPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
         check(project.plugins.hasPlugin("com.android.application"),
-                { "android-screenshot-reported can only be applied to android applications" })
+                { "screenshot-reporter plugin can only be applied to android applications" })
 
         val appExtension = project.property("android") as AppExtension
         appExtension.applicationVariants.all { variant ->

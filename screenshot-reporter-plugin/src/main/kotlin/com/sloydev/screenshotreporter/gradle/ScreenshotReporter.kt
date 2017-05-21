@@ -1,4 +1,4 @@
-package com.schibsted.screenshotreporter
+package com.sloydev.screenshotreporter.gradle
 
 import com.android.ddmlib.*
 import com.android.ddmlib.FileListingService.TYPE_DIRECTORY
@@ -27,7 +27,7 @@ class ScreenshotReporter(val appPackage: String) {
         val singleDevice = getRunningDevice(adb)
         pullDirectory(singleDevice, DEVICE_SCREENSHOT_DIR, outputDir)
 
-        println("Wrote report to ${outputDir.resolve(DEVICE_SCREENSHOT_DIR).absolutePath}")
+        println("Wrote screenshots report to file://${outputDir.resolve(DEVICE_SCREENSHOT_DIR).absolutePath}")
     }
 
     fun cleanScreenshotsFromDevice() {

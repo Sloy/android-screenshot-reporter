@@ -1,5 +1,6 @@
 package com.schibsted.screenshotreporter
 
+import com.sloydev.screenshotreporter.gradle.ScreenshotReporterTask
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -10,9 +11,9 @@ class ScreenshotReporterPluginTest {
     @Test
     fun `adds task to project`() {
         val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("com.schibsted.android-screenshot-reporter")
+        project.pluginManager.apply("com.sloydev.screenshot-reporter")
 
-        assertTrue(project.tasks.getByName(ScreenshotReporterPlugin.TASK_NAME) is ScreenshotReporterTask)
+        assertTrue(project.tasks.getByName(ScreenshotReporterTask.TASK_NAME) is ScreenshotReporterTask)
     }
 
 }

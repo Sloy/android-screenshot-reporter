@@ -1,4 +1,4 @@
-package com.schibsted.screenshotreporter.testapp;
+package com.sloydev.screenshotreporter.testapp;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

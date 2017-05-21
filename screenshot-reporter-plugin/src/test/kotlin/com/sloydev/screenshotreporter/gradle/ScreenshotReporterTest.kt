@@ -2,7 +2,9 @@ package com.schibsted.screenshotreporter
 
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
-import com.schibsted.screenshotreporter.ScreenshotReporter.Companion.DEVICE_SCREENSHOT_DIR
+import com.sloydev.screenshotreporter.gradle.ScreenshotReporter
+import com.sloydev.screenshotreporter.gradle.ScreenshotReporter.Companion.DEVICE_SCREENSHOT_DIR
+import com.sloydev.screenshotreporter.gradle.getExternalStoragePath
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

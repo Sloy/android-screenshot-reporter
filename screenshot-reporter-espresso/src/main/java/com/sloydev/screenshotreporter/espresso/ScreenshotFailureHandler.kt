@@ -1,4 +1,4 @@
-package com.sloydev.espresso
+package com.sloydev.screenshotreporter.espresso
 
 import android.support.test.espresso.FailureHandler
 import android.view.View

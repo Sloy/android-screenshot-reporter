@@ -3,7 +3,8 @@ package com.schibsted.screenshotreporter.testapp;
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.rule.ActivityTestRule;
 
-import com.sloydev.espresso.ScreenshotRule;
+import com.sloydev.screenshotreporter.espresso.ScreenshotRule;
+import com.sloydev.screenshotreporter.testapp.MainActivity;
 
 import org.junit.Rule;
 import org.junit.Test;

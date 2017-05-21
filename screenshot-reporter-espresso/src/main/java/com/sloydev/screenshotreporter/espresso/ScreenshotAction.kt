@@ -1,4 +1,4 @@
-package com.sloydev.espresso
+package com.sloydev.screenshotreporter.espresso
 
 import android.content.pm.PackageManager
 import android.os.Build

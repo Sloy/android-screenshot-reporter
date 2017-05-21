@@ -1,6 +1,8 @@
 package com.schibsted.screenshotreporter
 
 import com.google.common.truth.Truth.assertThat
+import com.sloydev.screenshotreporter.gradle.ScreenshotReporter
+import com.sloydev.screenshotreporter.gradle.ScreenshotReporterTask
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
@@ -31,7 +33,7 @@ class IntegrationTests {
 
         val result: BuildResult = runTask()
 
-        val task = result.task(":${ScreenshotReporterPlugin.TASK_NAME}")
+        val task = result.task(":${ScreenshotReporterTask.TASK_NAME}")
         val taskOutcome = task.outcome
         assertThat(taskOutcome).isEqualTo(TaskOutcome.SUCCESS)
     }
@@ -54,7 +56,7 @@ class IntegrationTests {
     private fun givenBuildFileWithPlugin() {
         buildFile.writeText(
                 """plugins {
-                                id 'com.schibsted.android-screenshot-reporter'
+                                id 'com.sloydev.screenshot-reporter'
                             }
                     """
         )
@@ -64,7 +66,7 @@ class IntegrationTests {
         val runner = GradleRunner.create()
                 .withProjectDir(projectDir)
                 .withPluginClasspath()
-                .withArguments(ScreenshotReporterPlugin.TASK_NAME)
+                .withArguments(ScreenshotReporterTask.TASK_NAME)
         val result = runner.build()
         println(result.output)
         return result

@@ -33,14 +33,14 @@ class MyTest {
 ```gradle
 buildscript {
     dependencies {
-        classpath 'com.schibsted:android-screenshot-reporter:0.0.1'
+        classpath 'com.sloydev:screenshot-reporter-plugin:0.0.1'
     }
 }
 
-apply plugin: 'com.schibsted.android-screenshot-reporter'
+apply plugin: 'com.sloydev.screenshot-reporter'
 
 dependencies {
-  androidTestCompile 'com.schibsted:screenshot-reporter-espresso:0.0.1'
+  androidTestCompile 'com.sloydev:screenshot-reporter-espresso:0.0.1'
 }
 ```
 
