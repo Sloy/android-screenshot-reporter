@@ -1,5 +1,6 @@
 package com.schibsted.screenshotreporter.testapp;
 
+import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.rule.ActivityTestRule;
 
 import com.sloydev.espresso.ScreenshotRule;
@@ -27,6 +28,11 @@ public class TakeScreenshotTest {
         File outputFile = screenshotRule.takeScreenshot("holi");
 
         assertTrue("The file wasn't created", outputFile.exists());
+    }
+
+    @Test(expected = NoMatchingViewException.class)
+    public void take_screenshot_on_failure() throws Exception {
+        assertDisplayed("Bye World");
     }
 
 }
