@@ -26,9 +26,7 @@ class MyTest {
 ```
 
 # Install
-
-
-> NOTE: It's not yet uploaded to jCenter or anywhere, so you can't really use it. But soon you will!
+Add the plugin and the client dependency to your project:
 
 ```gradle
 buildscript {

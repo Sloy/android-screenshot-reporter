@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 25
@@ -31,4 +32,19 @@ dependencies {
         exclude group: 'com.android.support'
     }
     compile 'com.jraska:falcon:1.0.4'
+}
+
+publish {
+    userOrg = 'sloy'
+    groupId = 'com.sloydev'
+    artifactId = 'screenshot-reporter-espresso'
+    publishVersion = '0.0.1'
+    desc = 'Take screenshot during your Espresso tests and see them later in a report.'
+    website = 'https://github.com/Sloy/android-screenshot-reporter'
+}
+
+// Hack for: https://github.com/novoda/bintray-release/issues/71
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
 }
