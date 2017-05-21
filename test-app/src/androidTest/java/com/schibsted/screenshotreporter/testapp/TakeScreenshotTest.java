@@ -7,7 +7,10 @@ import com.sloydev.espresso.ScreenshotRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.io.File;
+
 import static com.schibsted.spain.barista.BaristaAssertions.assertDisplayed;
+import static org.junit.Assert.assertTrue;
 
 public class TakeScreenshotTest {
 
@@ -21,7 +24,9 @@ public class TakeScreenshotTest {
     public void take_a_screenshot() throws Exception {
         assertDisplayed("Hello World!");
 
-        screenshotRule.takeScreenshot("holi");
+        File outputFile = screenshotRule.takeScreenshot("holi");
+
+        assertTrue("The file wasn't created", outputFile.exists());
     }
 
 }
