@@ -1,3 +1,53 @@
-# android-screenshot-reporter
+# Android Screenshot Reporter
 
-TODO("not implemented")
+Take screenshot during your Espresso tests and see them later in a report.
+
+The tool consists in two dependencies: a client library to take screenshots (based on [Falcon](https://github.com/jraska/Falcon)),
+and a Gradle plugin to download those screenshots from a device and generate the report.
+
+# Usage
+
+Just use the `ScreenshotRule` in your Espresso tests:
+
+```java
+class MyTest {
+  // ...
+  @Rule
+  public ScreenshotRule screenshotRule = new ScreenshotRule();
+
+  @Test
+  public void myTest(){
+    // ...
+    screenshotRule.takeScreenshot("tag");
+    // ...
+  }
+
+}
+```
+
+# Install
+
+
+> NOTE: It's not yet uploaded to jCenter or anywhere, so you can't really use it. But soon you will!
+
+```gradle
+buildscript {
+    dependencies {
+        classpath 'com.schibsted:android-screenshot-reporter:0.0.1'
+    }
+}
+
+apply plugin: 'com.schibsted.android-screenshot-reporter'
+
+dependencies {
+  androidTestCompile 'com.schibsted:screenshot-reporter-espresso:0.0.1'
+}
+```
+
+Now you can run your usual `connectedAndroidTest` tasks.
+
+# How it works
+
+Magic!
+
+_No, really, I have to fill this section at some point._
