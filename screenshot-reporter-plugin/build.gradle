@@ -41,7 +41,7 @@ publish {
     userOrg = 'sloy'
     groupId = 'com.sloydev'
     artifactId = 'screenshot-reporter-plugin'
-    publishVersion = '0.0.1'
+    publishVersion = '0.0.2'
     desc = 'Take screenshot during your Espresso tests and see them later in a report.'
     website = 'https://github.com/Sloy/android-screenshot-reporter'
 }
