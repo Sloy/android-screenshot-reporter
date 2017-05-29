@@ -1,6 +1,7 @@
 package com.sloydev.screenshotreporter.espresso
 
 import android.support.test.espresso.Espresso
+import android.support.test.espresso.FailureHandler
 import android.support.test.espresso.base.DefaultFailureHandler
 import org.junit.rules.TestRule
 import org.junit.runner.Description
@@ -10,34 +11,39 @@ import java.io.File
 
 open class ScreenshotRule : TestRule {
 
-    private lateinit var className: String
-    private lateinit var methodName: String
-
-    val screenshotsDirectory = ScreenshotDirectoryProvider.getInstance().getScreenshotsDirectory()
+    private val screenshotsDirectory = ScreenshotDirectoryProvider.getInstance().getScreenshotsDirectory()
+    private val delegateFailureHandler: FailureHandler = DefaultFailureHandler(getAppContext())
 
     override fun apply(base: Statement, description: Description): Statement {
-        className = description.className
-        methodName = description.methodName
-        return object : Statement(){
+        return object : Statement() {
             override fun evaluate() {
+                CurrentTestInfo.className = description.className
+                CurrentTestInfo.methodName = description.methodName
+                CurrentTestInfo.lastErrorFile = null
                 setupFailureHandler()
-                base.evaluate()
+
+                try {
+                    base.evaluate()
+                    CurrentTestInfo.lastErrorFile?.delete()
+                } catch(e: Exception) {
+                    throw e
+                }
             }
-
         }
-
     }
 
     fun takeScreenshot(tag: String): File {
         screenshotsDirectory.mkdirs()
-        val screenshotFile = getScreenshotFileFor(className, methodName, tag)
+        val screenshotFile = getScreenshotFileFor(CurrentTestInfo.className, CurrentTestInfo.methodName, tag)
         ScreenshotAction.perform(screenshotFile)
         return screenshotFile
     }
 
     fun setupFailureHandler() {
-        val failureHandler = ScreenshotFailureHandler(this, DefaultFailureHandler(getAppContext()))
-        Espresso.setFailureHandler(failureHandler)
+        Espresso.setFailureHandler({ error, viewMatcher ->
+            CurrentTestInfo.lastErrorFile = takeScreenshot("ERROR")
+            delegateFailureHandler.handle(error, viewMatcher)
+        })
     }
 
     private fun getScreenshotFileFor(className: String, methodName: String, tag: String): File {

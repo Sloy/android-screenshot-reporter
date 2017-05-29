@@ -31,9 +31,17 @@ public class TakeScreenshotTest {
         assertTrue("The file wasn't created", outputFile.exists());
     }
 
-    @Test(expected = NoMatchingViewException.class)
+    @Test
     public void take_screenshot_on_failure() throws Exception {
         assertDisplayed("Bye World");
+    }
+
+    @Test
+    public void not_take_screenshot_on_handled_failure() throws Exception {
+        try {
+            assertDisplayed("Bye World");
+        } catch (NoMatchingViewException e) {
+        }
     }
 
 }
