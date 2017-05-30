@@ -1,11 +1,10 @@
 package com.sloydev.screenshotreporter.espresso
 
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Build
-import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.UiController
 import android.support.test.espresso.ViewAction
-import android.support.test.espresso.matcher.ViewMatchers.isRoot
 import android.util.Log
 import android.view.View
 import org.hamcrest.Matcher
@@ -16,7 +15,12 @@ class ScreenshotAction(val file: File, val screenshotTaker: ScreenshotTaker, val
 
     companion object {
         fun perform(file: File, screenshotTaker: ScreenshotTaker = FalconScreenshotTaker()) {
-            onView(isRoot()).perform(ScreenshotAction(file, screenshotTaker))
+//            onView(isRoot()).perform(ScreenshotAction(file, screenshotTaker))
+            val currentActivity = getCurrentActivity()
+            currentActivity?.let {
+                ScreenshotAction(file, screenshotTaker).performWithoutEspresso(currentActivity)
+            }
+
         }
     }
 
@@ -30,6 +34,14 @@ class ScreenshotAction(val file: File, val screenshotTaker: ScreenshotTaker, val
 
     override fun perform(uiController: UiController, view: View) {
         val activity = getCurrentActivity(view)
+        takeScreenshotOnActivity(activity, file)
+    }
+
+    fun performWithoutEspresso(activity: Activity) {
+        takeScreenshotOnActivity(activity, file)
+    }
+
+    private fun takeScreenshotOnActivity(activity: Activity, outputFile: File) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (activity.checkSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE") != PackageManager.PERMISSION_GRANTED) {
                 val errorMessage = "Can't take screenshots without WRITE_EXTERNAL_STORAGE permission"
@@ -41,7 +53,7 @@ class ScreenshotAction(val file: File, val screenshotTaker: ScreenshotTaker, val
                 }
             }
         }
-        screenshotTaker.take(activity, file)
+        screenshotTaker.take(activity, outputFile)
     }
 
 
