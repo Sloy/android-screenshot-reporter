@@ -46,6 +46,5 @@ publish {
 
 // Hack for: https://github.com/novoda/bintray-release/issues/71
 tasks.withType(Javadoc) {
-    options.addStringOption('Xdoclint:none', '-quiet')
-    options.addStringOption('encoding', 'UTF-8')
+    excludes = ['**/*.kt']
 }
