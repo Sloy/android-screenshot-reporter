@@ -41,10 +41,10 @@ public class TakeScreenshotTest {
 
     @Test
     public void take_screenshot_with_suffix() throws Exception {
-        File expectedFile = new File(screenshotsDirectory, "TakeScreenshotTest.take_screenshot_with_suffix_SUFFIX.png");
+        File expectedFile = new File(screenshotsDirectory, "TakeScreenshotTest.take_screenshot_with_suffix-SUFFIX.png");
         expectedFile.delete();
 
-        Screenshot.take(null, "_SUFFIX");
+        Screenshot.take(null, "-SUFFIX");
 
         assertTrue("The file wasn't created",
                 expectedFile.exists());
