@@ -40,22 +40,25 @@ object Screenshot {
     }
 
     private fun methodName(): String {
-        return Thread.currentThread().stackTrace[0]
-                .let { it.className + "." + it.methodName }
+        return Thread.currentThread().stackTrace[0].simpleName()
     }
 
     private fun testName(): String? {
         return Thread.currentThread().stackTrace
-                .find { traceElement ->
-                    silentTry {
-                        traceElement.let { Class.forName(it.className) }
-                                .getDeclaredMethod(traceElement.methodName)
-                                .getAnnotation(Test::class.java)
-                    } != null
-                }
-                ?.let { testMethodElement ->
-                    testMethodElement.className + "." + testMethodElement.methodName
-                }
+                .find { it.isTestMethod() }
+                ?.simpleName()
+    }
+
+    private fun StackTraceElement.isTestMethod(): Boolean {
+        return silentTry {
+            Class.forName(className)
+                    .getDeclaredMethod(methodName)
+                    .getAnnotation(Test::class.java)
+        } != null
+    }
+
+    private fun StackTraceElement.simpleName(): String {
+        return Class.forName(className).simpleName + "." + methodName
     }
 
     private fun <R> silentTry(block: () -> R): R? {
