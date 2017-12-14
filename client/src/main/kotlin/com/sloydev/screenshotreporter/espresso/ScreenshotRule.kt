@@ -11,7 +11,7 @@ import java.io.File
 
 open class ScreenshotRule : TestRule {
 
-    private val screenshotsDirectory = ScreenshotDirectoryProvider.getInstance().getScreenshotsDirectory()
+    private val screenshotsDirectory = ScreenshotDirectory.get()
     private val delegateFailureHandler: FailureHandler = DefaultFailureHandler(getAppContext())
 
     override fun apply(base: Statement, description: Description): Statement {
@@ -35,7 +35,7 @@ open class ScreenshotRule : TestRule {
     fun takeScreenshot(tag: String): File {
         screenshotsDirectory.mkdirs()
         val screenshotFile = getScreenshotFileFor(CurrentTestInfo.className, CurrentTestInfo.methodName, tag)
-        ScreenshotAction.perform(screenshotFile)
+        Screenshot.take(screenshotFile, failOnError = false)
         return screenshotFile
     }
 

@@ -3,15 +3,19 @@ package com.schibsted.screenshotreporter.testapp;
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.rule.ActivityTestRule;
 
+import com.sloydev.screenshotreporter.espresso.Screenshot;
+import com.sloydev.screenshotreporter.espresso.ScreenshotDirectory;
 import com.sloydev.screenshotreporter.espresso.ScreenshotRule;
 import com.sloydev.screenshotreporter.testapp.MainActivity;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.File;
 
 import static com.schibsted.spain.barista.BaristaAssertions.assertDisplayed;
+import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class TakeScreenshotTest {
@@ -22,13 +26,21 @@ public class TakeScreenshotTest {
     @Rule
     public ScreenshotRule screenshotRule = new ScreenshotRule();
 
+    private File screenshotsDirectory = ScreenshotDirectory.INSTANCE.get();
+
+    @Before
+    public void setUp() throws Exception {
+        screenshotsDirectory.deleteOnExit();
+    }
+
     @Test
     public void take_a_screenshot() throws Exception {
-        assertDisplayed("Hello World!");
+        File expectedFile = new File(screenshotsDirectory, "TakeScreenshotTest.take_a_screenshot.png");
+        assertFalse(expectedFile.exists());
 
-        File outputFile = screenshotRule.takeScreenshot("holi");
+        Screenshot.take();
 
-        assertTrue("The file wasn't created", outputFile.exists());
+        assertTrue("The file wasn't created", expectedFile.exists());
     }
 
     @Test
