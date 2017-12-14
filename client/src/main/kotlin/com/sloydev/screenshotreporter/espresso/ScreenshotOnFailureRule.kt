@@ -12,7 +12,7 @@ open class ScreenshotOnFailureRule : TestRule {
         return object : Statement() {
             override fun evaluate() {
                 val originalHandler = getCurrentFailureHandler()
-                val screenshotHandler = ScreenshotFailureHandler(description, originalHandler)
+                val screenshotHandler = ScreenshotFailureHandler(originalHandler)
 
                 Espresso.setFailureHandler(screenshotHandler)
                 try {

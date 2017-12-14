@@ -2,14 +2,17 @@ buildscript {
     ext.kotlin_version = '1.1.2-3'
     repositories {
         jcenter()
+        maven { url "https://jitpack.io" }
     }
     dependencies {
         classpath files("../plugin/build/libs/plugin.jar")
+        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.3.0'
     }
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.sloydev.screenshot-reporter'
+apply plugin: 'composer'
 
 android {
     compileSdkVersion 25
@@ -40,6 +43,7 @@ dependencies {
     compile 'com.jraska:falcon:1.0.4'
 
     androidTestCompile project(':client')
+    androidTestCompile "com.google.truth:truth:0.37"
     androidTestCompile('com.schibsted.spain:barista:2.1.0') {
         exclude group: 'com.android.support'
     }

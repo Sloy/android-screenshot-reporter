@@ -2,11 +2,13 @@ package com.schibsted.screenshotreporter.testapp;
 
 import android.support.test.rule.ActivityTestRule;
 
+import com.sloydev.screenshotreporter.espresso.FileUtilsKt;
 import com.sloydev.screenshotreporter.espresso.Screenshot;
 import com.sloydev.screenshotreporter.espresso.ScreenshotDirectory;
 import com.sloydev.screenshotreporter.espresso.ScreenshotOnFailureRule;
 import com.sloydev.screenshotreporter.testapp.MainActivity;
 
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -20,18 +22,25 @@ import static org.junit.Assert.assertTrue;
 
 public class TakeScreenshotTest {
 
+    private static final String CLASS_NAME = TakeScreenshotTest.class.getName();
+
     @Rule
     public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(MainActivity.class);
 
     @Rule
     public ScreenshotOnFailureRule screenshotRule = new ScreenshotOnFailureRule();
 
-    private File screenshotsDirectory = ScreenshotDirectory.INSTANCE.get();
+    private static File screenshotsDirectory = ScreenshotDirectory.INSTANCE.get();
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        FileUtilsKt.deleteDirectory(screenshotsDirectory);
+    }
 
     @Test
     public void take_screenshot() throws Exception {
-        File expectedFile = new File(screenshotsDirectory, "TakeScreenshotTest.take_screenshot.png");
-        expectedFile.delete();
+        File expectedFile = new File(screenshotsDirectory,
+                CLASS_NAME + "/take_screenshot/take_screenshot.png");
 
         Screenshot.take();
 
@@ -40,20 +49,9 @@ public class TakeScreenshotTest {
     }
 
     @Test
-    public void take_screenshot_with_suffix() throws Exception {
-        File expectedFile = new File(screenshotsDirectory, "TakeScreenshotTest.take_screenshot_with_suffix-SUFFIX.png");
-        expectedFile.delete();
-
-        Screenshot.take(null, "-SUFFIX");
-
-        assertTrue("The file wasn't created",
-                expectedFile.exists());
-    }
-
-    @Test
     public void take_screenshot_with_name() throws Exception {
-        File expectedFile = new File(screenshotsDirectory, "custom name.png");
-        expectedFile.delete();
+        File expectedFile = new File(screenshotsDirectory,
+                CLASS_NAME + "/take_screenshot_with_name/custom name.png");
 
         Screenshot.take("custom name");
 
@@ -62,9 +60,23 @@ public class TakeScreenshotTest {
     }
 
     @Test
+    public void take_multiple_screenshot() throws Exception {
+        File expectedFile1 = new File(screenshotsDirectory,
+                CLASS_NAME + "/take_multiple_screenshot/first.png");
+        File expectedFile2 = new File(screenshotsDirectory,
+                CLASS_NAME + "/take_multiple_screenshot/second.png");
+
+        Screenshot.take("first");
+        Screenshot.take("second");
+
+        assertTrue("The file wasn't created", expectedFile1.exists());
+        assertTrue("The file wasn't created", expectedFile2.exists());
+    }
+
+    @Test
     public void take_screenshot_on_espresso_failure() throws Exception {
-        File expectedFile = new File(screenshotsDirectory, "TakeScreenshotTest.take_screenshot_on_espresso_failure (FAILURE).png");
-        expectedFile.delete();
+        File expectedFile = new File(screenshotsDirectory,
+                CLASS_NAME + "/take_screenshot_on_espresso_failure/FAILURE.png");
 
         try {
             onView(withText("I don't exist")).check(matches(isDisplayed()));

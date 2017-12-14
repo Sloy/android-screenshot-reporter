@@ -2,28 +2,25 @@ package com.sloydev.screenshotreporter.espresso
 
 import android.content.pm.PackageManager
 import android.os.Build
-import android.support.test.espresso.Espresso
-import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.IdlingRegistry
-import android.support.test.espresso.matcher.ViewMatchers.isRoot
 import android.util.Log
-import com.sloydev.screenshotreporter.espresso.SleepViewAction.sleep
-import org.junit.Test
 import java.io.File
 
 object Screenshot {
 
     @JvmOverloads
     @JvmStatic
-    fun take(name: String? = null, suffix: String = "", failOnError: Boolean = true) {
-        val fileName = (name ?: testName() ?: methodName())
-        val outputFile = ScreenshotDirectory.get().resolve("${fileName+suffix}.png")
+    fun take(name: String? = null, failOnError: Boolean = true): File {
+        val outputFile = bestOutputFile(name)
         take(outputFile, failOnError)
+        return outputFile
     }
 
-    @JvmOverloads
+    private fun bestOutputFile(name: String?): File {
+        return ScreenshotDirectory.get() + (testScreenshotFile(name)?: nonTestFile(name))
+    }
+
     @JvmStatic
-    fun take(toFile: File, failOnError: Boolean = true) {
+    private fun take(toFile: File, failOnError: Boolean = true) {
         try {
             takeOrFail(toFile)
         } catch (e: Exception) {
@@ -46,34 +43,21 @@ object Screenshot {
         ScreenshotStrategy.get().take(outputFile)
     }
 
-    private fun methodName(): String {
-        val originalMethodDepth = 6
-        return Thread.currentThread().stackTrace[originalMethodDepth].simpleName()
+    /**
+     * When taking screenshots from a test, will return a File compatible with Spoon directory structure.
+     */
+    private fun testScreenshotFile(customName: String?): File? {
+        val currentTest = findCurrentTest() ?: return null
+
+        val fileName = customName ?: currentTest.methodName
+        val filePath = "${currentTest.className}/${currentTest.methodName}/$fileName.png"
+        return File(filePath)
     }
 
-    private fun testName(): String? {
-        return Thread.currentThread().stackTrace
-                .find { it.isTestMethod() }
-                ?.simpleName()
+    private fun nonTestFile(customName: String?): File {
+        val fileName = customName ?: System.currentTimeMillis()
+        return File("$fileName.png")
     }
 
-    private fun StackTraceElement.isTestMethod(): Boolean {
-        return silentTry {
-            Class.forName(className)
-                    .getDeclaredMethod(methodName)
-                    .getAnnotation(Test::class.java)
-        } != null
-    }
 
-    private fun StackTraceElement.simpleName(): String {
-        return Class.forName(className).simpleName + "." + methodName
-    }
-
-    private fun <R> silentTry(block: () -> R): R? {
-        return try {
-            block()
-        } catch (e: Exception) {
-            null
-        }
-    }
 }

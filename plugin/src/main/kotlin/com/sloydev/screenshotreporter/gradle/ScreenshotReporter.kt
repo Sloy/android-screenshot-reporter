@@ -12,7 +12,7 @@ class ScreenshotReporter(val appPackage: String) {
 
     companion object {
         val SDK = File(System.getenv("ANDROID_HOME"))
-        val DEVICE_SCREENSHOT_DIR = "app_" + "test_screenshots"
+        val DEVICE_SCREENSHOT_DIR = "app_spoon-screenshots"
         val MARSHMALLOW_API_LEVEL = 23
     }
 
