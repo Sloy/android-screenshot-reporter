@@ -17,17 +17,22 @@ class ScreenshotReporter(val appPackage: String) {
     }
 
     fun reportScreenshots(outputDir: File) {
+        outputDir.deleteRecursively()
         outputDir.mkdirs()
-        outputDir.listFiles().forEach {
-            println("delete ${it.name}")
-            it.deleteRecursively()
-        }
 
         val adb = getAdb()
         val singleDevice = getRunningDevice(adb)
         pullDirectory(singleDevice, DEVICE_SCREENSHOT_DIR, outputDir)
+        simplifyDirectoryStructure(outputDir)
 
-        println("Wrote screenshots report to file://${outputDir.resolve(DEVICE_SCREENSHOT_DIR).absolutePath}")
+        println("Wrote screenshots report to file://${outputDir.absolutePath}")
+    }
+
+    private fun simplifyDirectoryStructure(outputDir: File) {
+        outputDir.resolve(DEVICE_SCREENSHOT_DIR).listFiles().forEach { subDir ->
+            subDir.renameTo(outputDir.resolve(subDir.name))
+        }
+        outputDir.resolve(DEVICE_SCREENSHOT_DIR).delete()
     }
 
     fun cleanScreenshotsFromDevice() {
