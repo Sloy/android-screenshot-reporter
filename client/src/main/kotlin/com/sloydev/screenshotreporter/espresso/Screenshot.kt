@@ -2,7 +2,12 @@ package com.sloydev.screenshotreporter.espresso
 
 import android.content.pm.PackageManager
 import android.os.Build
+import android.support.test.espresso.Espresso
+import android.support.test.espresso.Espresso.onView
+import android.support.test.espresso.IdlingRegistry
+import android.support.test.espresso.matcher.ViewMatchers.isRoot
 import android.util.Log
+import com.sloydev.screenshotreporter.espresso.SleepViewAction.sleep
 import org.junit.Test
 import java.io.File
 
@@ -30,13 +35,15 @@ object Screenshot {
         }
     }
 
-    private fun takeOrFail(toFile: File) {
+    private fun takeOrFail(outputFile: File) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (getAppContext().checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 throw IllegalStateException("Can't take screenshots without WRITE_EXTERNAL_STORAGE permission")
             }
         }
-        ScreenshotStrategy.get().take(toFile)
+        outputFile.parentFile.mkdirs()
+
+        ScreenshotStrategy.get().take(outputFile)
     }
 
     private fun methodName(): String {
