@@ -40,7 +40,7 @@ dependencies {
     compile 'com.jraska:falcon:1.0.4'
 
     androidTestCompile project(':client')
-    androidTestCompile('com.schibsted.spain:barista:1.0.1') {
+    androidTestCompile('com.schibsted.spain:barista:2.1.0') {
         exclude group: 'com.android.support'
     }
 }

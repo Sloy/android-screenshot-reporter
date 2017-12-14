@@ -1,38 +1,32 @@
 package com.schibsted.screenshotreporter.testapp;
 
-import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.rule.ActivityTestRule;
 
 import com.sloydev.screenshotreporter.espresso.Screenshot;
 import com.sloydev.screenshotreporter.espresso.ScreenshotDirectory;
-import com.sloydev.screenshotreporter.espresso.ScreenshotRule;
+import com.sloydev.screenshotreporter.espresso.ScreenshotOnFailureRule;
 import com.sloydev.screenshotreporter.testapp.MainActivity;
 
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.File;
 
-import static com.schibsted.spain.barista.BaristaAssertions.assertDisplayed;
-import static junit.framework.Assert.assertFalse;
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertTrue;
 
 public class TakeScreenshotTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<MainActivity>(MainActivity.class);
+    public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(MainActivity.class);
 
     @Rule
-    public ScreenshotRule screenshotRule = new ScreenshotRule();
+    public ScreenshotOnFailureRule screenshotRule = new ScreenshotOnFailureRule();
 
     private File screenshotsDirectory = ScreenshotDirectory.INSTANCE.get();
-
-    @Before
-    public void setUp() throws Exception {
-        //TODO delete whole directory
-    }
 
     @Test
     public void take_screenshot() throws Exception {
@@ -68,18 +62,17 @@ public class TakeScreenshotTest {
     }
 
     @Test
-    @Ignore
-    public void take_screenshot_on_failure() throws Exception {
-        assertDisplayed("Bye World");
-    }
+    public void take_screenshot_on_espresso_failure() throws Exception {
+        File expectedFile = new File(screenshotsDirectory, "TakeScreenshotTest.take_screenshot_on_espresso_failure (FAILURE).png");
+        expectedFile.delete();
 
-    @Test
-    @Ignore
-    public void not_take_screenshot_on_handled_failure() throws Exception {
         try {
-            assertDisplayed("Bye World");
-        } catch (NoMatchingViewException e) {
+            onView(withText("I don't exist")).check(matches(isDisplayed()));
+        } catch (Exception ignored) {
         }
+
+        assertTrue("The file wasn't created",
+                expectedFile.exists());
     }
 
 }
