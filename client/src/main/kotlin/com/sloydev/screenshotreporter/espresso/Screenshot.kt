@@ -47,7 +47,8 @@ object Screenshot {
     }
 
     private fun methodName(): String {
-        return Thread.currentThread().stackTrace[0].simpleName()
+        val originalMethodDepth = 6
+        return Thread.currentThread().stackTrace[originalMethodDepth].simpleName()
     }
 
     private fun testName(): String? {
