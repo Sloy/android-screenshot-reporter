@@ -15,9 +15,9 @@ object Screenshot {
 
     @JvmOverloads
     @JvmStatic
-    fun take(name: String? = null, failOnError: Boolean = true) {
-        val fileName = name ?: testName() ?: methodName()
-        val outputFile = ScreenshotDirectory.get().resolve("$fileName.png")
+    fun take(name: String? = null, suffix: String = "", failOnError: Boolean = true) {
+        val fileName = (name ?: testName() ?: methodName())
+        val outputFile = ScreenshotDirectory.get().resolve("${fileName+suffix}.png")
         take(outputFile, failOnError)
     }
 

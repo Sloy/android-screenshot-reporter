@@ -46,6 +46,17 @@ public class TakeScreenshotTest {
     }
 
     @Test
+    public void take_screenshot_with_suffix() throws Exception {
+        File expectedFile = new File(screenshotsDirectory, "TakeScreenshotTest.take_screenshot_with_suffix_SUFFIX.png");
+        expectedFile.delete();
+
+        Screenshot.take(null, "_SUFFIX");
+
+        assertTrue("The file wasn't created",
+                expectedFile.exists());
+    }
+
+    @Test
     public void take_screenshot_with_name() throws Exception {
         File expectedFile = new File(screenshotsDirectory, "custom name.png");
         expectedFile.delete();
