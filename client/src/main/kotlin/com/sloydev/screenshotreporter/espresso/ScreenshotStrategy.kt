@@ -43,7 +43,8 @@ class UiAutomatorScreenshotStrategy : ScreenshotStrategy {
         }
 
         // Sleep a bit to finish animations and stuff. Sorry u_u
-        onView(isRoot()).perform(sleep(100))
+        Espresso.onIdle()
+        Thread.sleep(1000)
 
         val uiAutomation = InstrumentationRegistry.getInstrumentation().uiAutomation
         val screenshotBitmap = uiAutomation.takeScreenshot()
