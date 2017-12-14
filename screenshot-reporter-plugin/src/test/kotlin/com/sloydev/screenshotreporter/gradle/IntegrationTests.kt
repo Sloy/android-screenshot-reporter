@@ -3,6 +3,7 @@ package com.schibsted.screenshotreporter
 import com.google.common.truth.Truth.assertThat
 import com.sloydev.screenshotreporter.gradle.ScreenshotReporter
 import com.sloydev.screenshotreporter.gradle.ScreenshotReporterTask
+import org.apache.commons.io.FileUtils
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
@@ -19,29 +20,32 @@ class IntegrationTests {
     val temporaryFolder = TemporaryFolder()
 
     lateinit var projectDir: File
-    lateinit var buildFile: File
+    private val reporterTaskName = ":${ScreenshotReporterTask.TASK_NAME}Debug"
 
     @Before
     fun setUp() {
-        projectDir = temporaryFolder.root
-        buildFile = temporaryFolder.newFile("build.gradle")
+        projectDir = temporaryFolder.newFolder("vanilla").also {
+            FileUtils.copyDirectory(File(javaClass.classLoader.getResource("vanilla").path), it)
+            File(it, "local.properties").writeText("sdk.dir=${System.getenv("HOME")}/Library/Android/sdk", Charsets.UTF_8)
+            File(it, "libs").also {
+                it.mkdir()
+                FileUtils.copyFileToDirectory(File("screenshot-reporter-plugin", "build/libs/screenshot-reporter-plugin.jar"), it)
+            }
+        }
     }
+
 
     @Test
     fun task_runs() {
-        givenBuildFileWithPlugin()
-
         val result: BuildResult = runTask()
 
-        val task = result.task(":${ScreenshotReporterTask.TASK_NAME}")
-        val taskOutcome = task.outcome
+        val task = result.task(reporterTaskName)
+        val taskOutcome = task?.outcome
         assertThat(taskOutcome).isEqualTo(TaskOutcome.SUCCESS)
     }
 
     @Test
     fun task_generates_output_files() {
-        givenBuildFileWithPlugin()
-
         runTask()
 
         val outputReportDirectory = projectDir.resolve("build")
@@ -53,20 +57,11 @@ class IntegrationTests {
 
     }
 
-    private fun givenBuildFileWithPlugin() {
-        buildFile.writeText(
-                """plugins {
-                                id 'com.sloydev.screenshot-reporter'
-                            }
-                    """
-        )
-    }
-
     private fun runTask(): BuildResult {
         val runner = GradleRunner.create()
                 .withProjectDir(projectDir)
                 .withPluginClasspath()
-                .withArguments(ScreenshotReporterTask.TASK_NAME)
+                .withArguments(reporterTaskName)
         val result = runner.build()
         println(result.output)
         return result
