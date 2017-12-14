@@ -1,16 +1,15 @@
-apply plugin: 'com.android.application'
-apply plugin: 'com.sloydev.screenshot-reporter'
-
 buildscript {
     ext.kotlin_version = '1.1.2-3'
     repositories {
-        mavenLocal()
         jcenter()
     }
     dependencies {
-        classpath 'com.sloydev:screenshot-reporter-plugin:0.0.1'
+        classpath files("../screenshot-reporter-plugin/build/libs/screenshot-reporter-plugin.jar")
     }
 }
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.sloydev.screenshot-reporter'
 
 android {
     compileSdkVersion 25
