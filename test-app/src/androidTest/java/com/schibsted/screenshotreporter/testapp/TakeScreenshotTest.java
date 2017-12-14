@@ -30,13 +30,13 @@ public class TakeScreenshotTest {
 
     @Before
     public void setUp() throws Exception {
-        screenshotsDirectory.deleteOnExit();
+        //TODO delete whole directory
     }
 
     @Test
-    public void take_a_screenshot() throws Exception {
-        File expectedFile = new File(screenshotsDirectory, "TakeScreenshotTest.take_a_screenshot.png");
-        assertFalse(expectedFile.exists());
+    public void take_screenshot() throws Exception {
+        File expectedFile = new File(screenshotsDirectory, "TakeScreenshotTest.take_screenshot.png");
+        expectedFile.delete();
 
         Screenshot.take();
 
