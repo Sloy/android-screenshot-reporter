@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath files("../screenshot-reporter-plugin/build/libs/screenshot-reporter-plugin.jar")
+        classpath files("../plugin/build/libs/plugin.jar")
     }
 }
 
@@ -39,7 +39,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.jraska:falcon:1.0.4'
 
-    androidTestCompile project(":screenshot-reporter-espresso")
+    androidTestCompile project(':client')
     androidTestCompile('com.schibsted.spain:barista:1.0.1') {
         exclude group: 'com.android.support'
     }

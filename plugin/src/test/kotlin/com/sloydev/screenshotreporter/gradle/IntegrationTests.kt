@@ -29,7 +29,7 @@ class IntegrationTests {
             File(it, "local.properties").writeText("sdk.dir=${System.getenv("HOME")}/Library/Android/sdk", Charsets.UTF_8)
             File(it, "libs").also {
                 it.mkdir()
-                FileUtils.copyFileToDirectory(File("screenshot-reporter-plugin", "build/libs/screenshot-reporter-plugin.jar"), it)
+                FileUtils.copyFileToDirectory(File("plugin", "build/libs/plugin.jar"), it)
             }
         }
     }
