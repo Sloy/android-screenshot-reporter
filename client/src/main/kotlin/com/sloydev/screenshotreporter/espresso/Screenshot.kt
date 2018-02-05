@@ -7,6 +7,9 @@ import java.io.File
 
 object Screenshot {
 
+    @JvmStatic
+    var useSimpleClassName = false
+
     @JvmOverloads
     @JvmStatic
     fun take(name: String? = null, failOnError: Boolean = true): File {
@@ -49,8 +52,9 @@ object Screenshot {
     private fun testScreenshotFile(customName: String?): File? {
         val currentTest = findCurrentTest() ?: return null
 
+        val testClassDirName= if(useSimpleClassName) currentTest.simpleClassName else currentTest.className
         val fileName = customName ?: currentTest.methodName
-        val filePath = "${currentTest.className}/${currentTest.methodName}/$fileName.png"
+        val filePath = "$testClassDirName/${currentTest.methodName}/$fileName.png"
         return File(filePath)
     }
 

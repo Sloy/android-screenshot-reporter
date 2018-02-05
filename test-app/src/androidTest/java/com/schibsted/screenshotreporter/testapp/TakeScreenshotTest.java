@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 public class TakeScreenshotTest {
 
     private static final String CLASS_NAME = TakeScreenshotTest.class.getName();
+    private static final String SIMPLE_CLASS_NAME = TakeScreenshotTest.class.getSimpleName();
 
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -59,6 +60,19 @@ public class TakeScreenshotTest {
                 CLASS_NAME + "/take_screenshot_with_name/custom name.png");
 
         Screenshot.take("custom name");
+
+        assertTrue("The file wasn't created",
+                expectedFile.exists());
+    }
+
+    @Test
+    public void take_screenshot_with_simple_class_name() throws Exception {
+        Screenshot.setUseSimpleClassName(true);
+
+        File expectedFile = new File(screenshotsDirectory,
+                SIMPLE_CLASS_NAME + "/take_screenshot_with_simple_class_name/simple.png");
+
+        Screenshot.take("simple");
 
         assertTrue("The file wasn't created",
                 expectedFile.exists());

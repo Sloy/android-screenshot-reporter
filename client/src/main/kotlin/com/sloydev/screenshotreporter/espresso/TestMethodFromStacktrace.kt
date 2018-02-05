@@ -3,7 +3,12 @@ package com.sloydev.screenshotreporter.espresso
 import org.junit.Test
 
 
-data class ClassAndMethod(val className: String, val methodName: String)
+data class ClassAndMethod(val className: String, val methodName: String){
+    val simpleClassName
+        get() = className.substringAfterLast(".")
+}
+
+
 
 fun findCurrentTest(): ClassAndMethod? {
     return Thread.currentThread().stackTrace
