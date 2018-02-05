@@ -1,6 +1,8 @@
 package com.schibsted.screenshotreporter.testapp;
 
+import android.Manifest;
 import android.support.test.rule.ActivityTestRule;
+import android.support.test.rule.GrantPermissionRule;
 
 import com.sloydev.screenshotreporter.espresso.FileUtilsKt;
 import com.sloydev.screenshotreporter.espresso.Screenshot;
@@ -23,6 +25,9 @@ import static org.junit.Assert.assertTrue;
 public class TakeScreenshotTest {
 
     private static final String CLASS_NAME = TakeScreenshotTest.class.getName();
+
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
 
     @Rule
     public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(MainActivity.class);
