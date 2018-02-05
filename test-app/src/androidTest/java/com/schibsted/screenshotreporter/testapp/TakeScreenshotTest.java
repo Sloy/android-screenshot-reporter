@@ -10,6 +10,7 @@ import com.sloydev.screenshotreporter.espresso.ScreenshotDirectory;
 import com.sloydev.screenshotreporter.espresso.ScreenshotOnFailureRule;
 import com.sloydev.screenshotreporter.testapp.MainActivity;
 
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -43,6 +44,12 @@ public class TakeScreenshotTest {
         FileUtilsKt.deleteDirectory(screenshotsDirectory);
     }
 
+    @After
+    public void tearDownDefaults() throws Exception {
+        Screenshot.setUseMethodSubdirectory(true);
+        Screenshot.setUseSimpleClassName(false);
+    }
+
     @Test
     public void take_screenshot() throws Exception {
         File expectedFile = new File(screenshotsDirectory,
@@ -73,6 +80,19 @@ public class TakeScreenshotTest {
                 SIMPLE_CLASS_NAME + "/take_screenshot_with_simple_class_name/simple.png");
 
         Screenshot.take("simple");
+
+        assertTrue("The file wasn't created",
+                expectedFile.exists());
+    }
+
+    @Test
+    public void take_screenshot_without_method_name() throws Exception {
+        Screenshot.setUseMethodSubdirectory(false);
+
+        File expectedFile = new File(screenshotsDirectory,
+                CLASS_NAME + "/no_method.png");
+
+        Screenshot.take("no_method");
 
         assertTrue("The file wasn't created",
                 expectedFile.exists());
