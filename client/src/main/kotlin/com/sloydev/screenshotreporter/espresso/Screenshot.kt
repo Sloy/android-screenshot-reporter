@@ -11,6 +11,8 @@ object Screenshot {
     var useSimpleClassName = false
     @JvmStatic
     var useMethodSubdirectory = true
+    @JvmStatic
+    var useFolders = true
 
     @JvmOverloads
     @JvmStatic
@@ -54,16 +56,16 @@ object Screenshot {
     private fun testScreenshotFile(customName: String?): File? {
         val currentTest = findCurrentTest() ?: return null
 
-        val testClassDirName = if (useSimpleClassName) currentTest.simpleClassName else currentTest.className
-        val fileName = customName ?: currentTest.methodName
-        val filePath = testClassDirName.let {
-            if (useMethodSubdirectory) {
-                it + "/${currentTest.methodName}"
-            } else {
-                it
-            }
-        } + "/$fileName.png"
-        return File(filePath)
+        val fileName: String = customName ?: currentTest.methodName
+        val methodDirName: String? = if (useMethodSubdirectory) currentTest.methodName else null
+        val classDirName: String = if (useSimpleClassName) currentTest.simpleClassName else currentTest.className
+
+        val dirSeparator = if (useFolders) "/" else " > "
+
+        val filePath = listOfNotNull(classDirName, methodDirName, fileName)
+                .joinToString(separator = dirSeparator)
+
+        return File("$filePath.png")
     }
 
     private fun nonTestFile(customName: String?): File {

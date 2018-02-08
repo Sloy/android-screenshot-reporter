@@ -48,6 +48,7 @@ public class TakeScreenshotTest {
     public void tearDownDefaults() throws Exception {
         Screenshot.setUseMethodSubdirectory(true);
         Screenshot.setUseSimpleClassName(false);
+        Screenshot.setUseFolders(true);
     }
 
     @Test
@@ -80,6 +81,19 @@ public class TakeScreenshotTest {
                 SIMPLE_CLASS_NAME + "/take_screenshot_with_simple_class_name/simple.png");
 
         Screenshot.take("simple");
+
+        assertTrue("The file wasn't created",
+                expectedFile.exists());
+    }
+
+    @Test
+    public void take_screenshot_without_folders() throws Exception {
+        Screenshot.setUseFolders(false);
+
+        File expectedFile = new File(screenshotsDirectory,
+                CLASS_NAME + " > take_screenshot_without_folders > no folders.png");
+
+        Screenshot.take("no folders");
 
         assertTrue("The file wasn't created",
                 expectedFile.exists());
