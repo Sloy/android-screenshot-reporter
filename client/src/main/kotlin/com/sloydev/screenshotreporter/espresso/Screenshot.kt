@@ -13,6 +13,8 @@ object Screenshot {
     var useMethodSubdirectory = true
     @JvmStatic
     var useFolders = true
+    @JvmStatic
+    var forceRootFolder: File? = null
 
     @JvmOverloads
     @JvmStatic
@@ -23,7 +25,8 @@ object Screenshot {
     }
 
     private fun bestOutputFile(name: String?): File {
-        return ScreenshotDirectory.get() + (testScreenshotFile(name) ?: nonTestFile(name))
+        val rootFolder = forceRootFolder ?: ScreenshotDirectory.get()
+        return rootFolder + (testScreenshotFile(name) ?: nonTestFile(name))
     }
 
     @JvmStatic
