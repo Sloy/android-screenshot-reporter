@@ -1,10 +1,8 @@
-package com.schibsted.screenshotreporter
+package com.sloydev.screenshotreporter.gradle
 
-import com.sloydev.screenshotreporter.gradle.ScreenshotReporterTask
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Assert.assertTrue
 import org.junit.Test
-
 
 class ScreenshotReporterPluginTest {
 
@@ -15,5 +13,4 @@ class ScreenshotReporterPluginTest {
 
         assertTrue(project.tasks.getByName(ScreenshotReporterTask.TASK_NAME) is ScreenshotReporterTask)
     }
-
 }

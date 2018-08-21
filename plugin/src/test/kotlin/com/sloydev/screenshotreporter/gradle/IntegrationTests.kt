@@ -1,8 +1,6 @@
-package com.schibsted.screenshotreporter
+package com.sloydev.screenshotreporter.gradle
 
 import com.google.common.truth.Truth.assertThat
-import com.sloydev.screenshotreporter.gradle.ScreenshotReporter
-import com.sloydev.screenshotreporter.gradle.ScreenshotReporterTask
 import org.apache.commons.io.FileUtils
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
@@ -12,7 +10,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.io.File
-
 
 class IntegrationTests {
 
@@ -29,11 +26,10 @@ class IntegrationTests {
             File(it, "local.properties").writeText("sdk.dir=${System.getenv("HOME")}/Library/Android/sdk", Charsets.UTF_8)
             File(it, "libs").also {
                 it.mkdir()
-                FileUtils.copyFileToDirectory(File("plugin", "build/libs/plugin.jar"), it)
+                FileUtils.copyFileToDirectory(File(".", "build/libs/plugin.jar"), it)
             }
         }
     }
-
 
     @Test
     fun task_runs() {
@@ -51,10 +47,8 @@ class IntegrationTests {
         val outputReportDirectory = projectDir.resolve("build")
                 .resolve(ScreenshotReporterTask.REPORTS_FOLDER)
                 .resolve(ScreenshotReporterTask.REPORTS_SUBFOLDER)
-                .resolve(ScreenshotReporter.DEVICE_SCREENSHOT_DIR)
         assertThat(outputReportDirectory.exists())
                 .isTrue()
-
     }
 
     private fun runTask(): BuildResult {
@@ -62,9 +56,7 @@ class IntegrationTests {
                 .withProjectDir(projectDir)
                 .withPluginClasspath()
                 .withArguments(reporterTaskName)
-        val result = runner.build()
-        println(result.output)
-        return result
+                .forwardOutput()
+        return runner.build()
     }
-
 }

@@ -20,8 +20,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0'
-        classpath files("libs/screenshot-reporter-plugin.jar")
+        classpath 'com.android.tools.build:gradle:3.1.0'
+        classpath files("libs/plugin.jar")
     }
 }
 

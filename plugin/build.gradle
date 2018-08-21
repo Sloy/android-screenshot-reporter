@@ -3,7 +3,16 @@ apply plugin: 'java-gradle-plugin'
 apply plugin: 'com.novoda.bintray-release'
 apply plugin: 'idea'
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
+
+gradlePlugin {
+    plugins {
+        screenshotReporter {
+            id = "com.sloydev.screenshot-reporter"
+            implementationClass = "com.sloydev.screenshotreporter.gradle.ScreenshotReporterPlugin"
+        }
+    }
+}
 
 repositories {
     jcenter()
@@ -25,6 +34,8 @@ dependencies {
     testCompile 'commons-io:commons-io:2.5'
     testCompile 'com.github.geowarin:docker-junit-rule:1.1.0'
 }
+
+tasks.findByPath('test').dependsOn('jar')
 
 test {
     testLogging {

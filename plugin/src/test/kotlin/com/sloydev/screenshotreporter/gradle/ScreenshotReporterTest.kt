@@ -1,10 +1,8 @@
-package com.schibsted.screenshotreporter
+package com.sloydev.screenshotreporter.gradle
 
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
-import com.sloydev.screenshotreporter.gradle.ScreenshotReporter
 import com.sloydev.screenshotreporter.gradle.ScreenshotReporter.Companion.DEVICE_SCREENSHOT_DIR
-import com.sloydev.screenshotreporter.gradle.getExternalStoragePath
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -20,7 +18,7 @@ class ScreenshotReporterTest {
     lateinit var inputTestFolder: File
     lateinit var nonExistentOutputFolder: File
 
-    val screenshotReporter = ScreenshotReporter("com.schibsted.screenshotreporter.testapp")
+    val screenshotReporter = ScreenshotReporter("com.sloydev.screenshotreporter.testapp")
 
     @Before
     fun setUp() {
@@ -99,7 +97,6 @@ class ScreenshotReporterTest {
                 .isTrue()
     }
 
-
     @Test
     fun `grant permission on marshmallow`() {
         screenshotReporter.grantPermissions()
@@ -131,5 +128,4 @@ class ScreenshotReporterTest {
             }
         }
     }
-
 }
