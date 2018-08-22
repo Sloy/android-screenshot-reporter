@@ -4,7 +4,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 
-open class SetupScreenshotReporterTask : DefaultTask() {
+open class SetupScreenshotsTask : DefaultTask() {
 
     companion object {
         val TASK_NAME = "setupScreenshots"

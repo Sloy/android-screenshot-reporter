@@ -11,6 +11,6 @@ class ScreenshotReporterPluginTest {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("com.sloydev.screenshot-reporter")
 
-        assertTrue(project.tasks.getByName(ScreenshotReporterTask.TASK_NAME) is ScreenshotReporterTask)
+        assertTrue(project.tasks.getByName(ReportScreenshotsTask.TASK_NAME) is ReportScreenshotsTask)
     }
 }

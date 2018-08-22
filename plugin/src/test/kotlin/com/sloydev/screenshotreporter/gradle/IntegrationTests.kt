@@ -17,7 +17,7 @@ class IntegrationTests {
     val temporaryFolder = TemporaryFolder()
 
     lateinit var projectDir: File
-    private val reporterTaskName = ":${ScreenshotReporterTask.TASK_NAME}Debug"
+    private val reporterTaskName = ":${ReportScreenshotsTask.TASK_NAME}Debug"
 
     @Before
     fun setUp() {
@@ -45,8 +45,8 @@ class IntegrationTests {
         runTask()
 
         val outputReportDirectory = projectDir.resolve("build")
-                .resolve(ScreenshotReporterTask.REPORTS_FOLDER)
-                .resolve(ScreenshotReporterTask.REPORTS_SUBFOLDER)
+                .resolve(ReportScreenshotsTask.REPORTS_FOLDER)
+                .resolve(ReportScreenshotsTask.REPORTS_SUBFOLDER)
         assertThat(outputReportDirectory.exists())
                 .isTrue()
     }

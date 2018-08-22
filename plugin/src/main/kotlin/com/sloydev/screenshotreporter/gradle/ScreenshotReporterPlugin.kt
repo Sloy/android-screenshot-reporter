@@ -26,8 +26,8 @@ open class ScreenshotReporterPlugin : Plugin<Project> {
             val testTask: Task? = variant.testVariant?.connectedInstrumentTest
             testTask?.let {
                 val setupTask = project.createTask(
-                        type = SetupScreenshotReporterTask::class,
-                        name = SetupScreenshotReporterTask.TASK_NAME + variantSuffix,
+                        type = SetupScreenshotsTask::class,
+                        name = SetupScreenshotsTask.TASK_NAME + variantSuffix,
                         description = "Setup the device to allow storing screenshots and clear any previous ones",
                         dependsOn = listOf(variant.install)) // install first to let us grant permissions
                         .apply {
@@ -36,8 +36,8 @@ open class ScreenshotReporterPlugin : Plugin<Project> {
                 project.tasks.add(setupTask)
 
                 val reporterTask = project.createTask(
-                        type = ScreenshotReporterTask::class,
-                        name = ScreenshotReporterTask.TASK_NAME + variantSuffix,
+                        type = ReportScreenshotsTask::class,
+                        name = ReportScreenshotsTask.TASK_NAME + variantSuffix,
                         description = "Downloads screenshots from the device")
                         .apply {
                             appPackage = packageName
