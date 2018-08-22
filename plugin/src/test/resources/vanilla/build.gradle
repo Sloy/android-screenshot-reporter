@@ -52,5 +52,12 @@ android {
     }
 }
 
+task dummyTask()
+
+screenshotsReporter {
+    buildVariant 'debug'
+    screenshotsTask "dummyTask"
+}
+
 dependencies {
 }

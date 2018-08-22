@@ -14,50 +14,56 @@ open class ScreenshotReporterPlugin : Plugin<Project> {
     }
 
     override fun apply(project: Project) {
-        check(project.plugins.hasPlugin("com.android.application"),
-                { "screenshot-reporter plugin can only be applied to android applications" })
+        check(project.plugins.hasPlugin("com.android.application")) {
+            "screenshot-reporter plugin can only be applied to android applications"
+        }
+
+        val reporterExtension = project.extensions.create("screenshotsReporter", ReporterPluginExtension::class.java)
 
         val appExtension = project.property("android") as AppExtension
         appExtension.applicationVariants.all { variant ->
-            val variantSuffix = variant.name.capitalize()
+            if (variant.name != reporterExtension.buildVariant) {
+                return@all
+            }
             val packageName = variant.applicationId
 
+            val screenshotsTask: Task = reporterExtension.screenshotsTask?.let {
+                project.rootProject.tasks.findByName(it)
+            } ?: variant.testVariant?.connectedInstrumentTest
+            ?: throw IllegalStateException("Test task not found")
 
-            val testTask: Task? = variant.testVariant?.connectedInstrumentTest
-            testTask?.let {
-                val setupTask = project.createTask(
-                        type = SetupScreenshotsTask::class,
-                        name = SetupScreenshotsTask.TASK_NAME + variantSuffix,
-                        description = "Setup the device to allow storing screenshots and clear any previous ones",
-                        dependsOn = listOf(variant.install)) // install first to let us grant permissions
-                        .apply {
-                            appPackage = packageName
-                        }
-                project.tasks.add(setupTask)
+            val setupTask = project.createTask(
+                    type = SetupScreenshotsTask::class,
+                    name = SetupScreenshotsTask.TASK_NAME,
+                    description = "Setup the device to allow storing screenshots and clear any previous ones",
+                    dependsOn = listOf(variant.install)) // install first to let us grant permissions
+                    .apply {
+                        appPackage = packageName
+                    }
+            project.tasks.add(setupTask)
 
-                val reporterTask = project.createTask(
-                        type = ReportScreenshotsTask::class,
-                        name = ReportScreenshotsTask.TASK_NAME + variantSuffix,
-                        description = "Downloads screenshots from the device")
-                        .apply {
-                            appPackage = packageName
-                        }
-                project.tasks.add(reporterTask)
+            val reporterTask = project.createTask(
+                    type = ReportScreenshotsTask::class,
+                    name = ReportScreenshotsTask.TASK_NAME,
+                    description = "Downloads screenshots from the device")
+                    .apply {
+                        appPackage = packageName
+                    }
+            project.tasks.add(reporterTask)
 
-                testTask.finalizedBy(reporterTask)
-                testTask.dependsOn(setupTask)
-            }
+            screenshotsTask.finalizedBy(reporterTask)
+            screenshotsTask.dependsOn(setupTask)
         }
-
-
     }
 
-    private fun <T : DefaultTask> Project.createTask(type: KClass<T>,
-                                                     name: String,
-                                                     group: String = GROUP,
-                                                     description: String? = null,
-                                                     dependsOn: List<Task>? = null,
-                                                     finalizedBy: List<Task>? = null)
+    private fun <T : DefaultTask> Project.createTask(
+            type: KClass<T>,
+            name: String,
+            group: String = GROUP,
+            description: String? = null,
+            dependsOn: List<Task>? = null,
+            finalizedBy: List<Task>? = null
+    )
             : T {
         return type.java.cast(project.tasks.create(LinkedHashMap<String, Any>().apply {
             put("name", name)
@@ -68,5 +74,4 @@ open class ScreenshotReporterPlugin : Plugin<Project> {
             finalizedBy?.let { put("finalizedBy", it) }
         }))
     }
-
 }

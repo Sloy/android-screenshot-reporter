@@ -2,7 +2,6 @@ package com.sloydev.screenshotreporter.gradle
 
 import com.google.common.truth.Truth.assertThat
 import org.apache.commons.io.FileUtils
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Before
@@ -16,8 +15,9 @@ class IntegrationTests {
     @get:Rule
     val temporaryFolder = TemporaryFolder()
 
-    lateinit var projectDir: File
-    private val reporterTaskName = ":${ReportScreenshotsTask.TASK_NAME}Debug"
+    private lateinit var projectDir: File
+    private val reporterTaskName = ":${ReportScreenshotsTask.TASK_NAME}"
+    private val setupTaskName = ":${SetupScreenshotsTask.TASK_NAME}"
 
     @Before
     fun setUp() {
@@ -33,7 +33,9 @@ class IntegrationTests {
 
     @Test
     fun task_runs() {
-        val result: BuildResult = runTask()
+        val result = gradleRunner()
+                .withArguments(reporterTaskName)
+                .build()
 
         val task = result.task(reporterTaskName)
         val taskOutcome = task?.outcome
@@ -42,7 +44,9 @@ class IntegrationTests {
 
     @Test
     fun task_generates_output_files() {
-        runTask()
+        gradleRunner()
+                .withArguments(reporterTaskName)
+                .build()
 
         val outputReportDirectory = projectDir.resolve("build")
                 .resolve(ReportScreenshotsTask.REPORTS_FOLDER)
@@ -51,12 +55,25 @@ class IntegrationTests {
                 .isTrue()
     }
 
-    private fun runTask(): BuildResult {
-        val runner = GradleRunner.create()
+    @Test
+    fun custom_task_runs_all() {
+        val result = gradleRunner()
+                .withArguments("dummyTask")
+                .build()
+
+        val reporterTask = result.task(reporterTaskName)
+        val setupTask = result.task(setupTaskName)
+        val customTask = result.task(":dummyTask")
+
+        assertThat(reporterTask?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+        assertThat(setupTask?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+        assertThat(customTask?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+    }
+
+    private fun gradleRunner(): GradleRunner {
+        return GradleRunner.create()
                 .withProjectDir(projectDir)
                 .withPluginClasspath()
-                .withArguments(reporterTaskName)
                 .forwardOutput()
-        return runner.build()
     }
 }
