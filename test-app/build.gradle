@@ -49,3 +49,8 @@ dependencies {
         exclude group: 'com.android.support'
     }
 }
+
+screenshotsReporter {
+    buildVariant 'debug'
+    screenshotsTask 'connectedAndroidTest'
+}
