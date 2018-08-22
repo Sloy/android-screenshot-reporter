@@ -1,7 +1,11 @@
 package com.sloydev.screenshotreporter.gradle
 
-import com.android.ddmlib.*
+import com.android.ddmlib.AndroidDebugBridge
+import com.android.ddmlib.CollectingOutputReceiver
+import com.android.ddmlib.FileListingService
 import com.android.ddmlib.FileListingService.TYPE_DIRECTORY
+import com.android.ddmlib.IDevice
+import com.android.ddmlib.SyncService
 import com.android.ddmlib.SyncService.getNullProgressMonitor
 import java.io.File
 import java.time.Duration
@@ -16,7 +20,7 @@ class ScreenshotReporter(val appPackage: String) {
         val MARSHMALLOW_API_LEVEL = 23
     }
 
-    fun reportScreenshots(outputDir: File) {
+    fun pullScreenshots(outputDir: File) {
         outputDir.deleteRecursively()
         outputDir.mkdirs()
 

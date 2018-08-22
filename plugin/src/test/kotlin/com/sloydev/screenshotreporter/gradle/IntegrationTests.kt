@@ -16,7 +16,7 @@ class IntegrationTests {
     val temporaryFolder = TemporaryFolder()
 
     private lateinit var projectDir: File
-    private val reporterTaskName = ":${ReportScreenshotsTask.TASK_NAME}"
+    private val pullTaskName = ":${PullScreenshotsTask.TASK_NAME}"
     private val setupTaskName = ":${SetupScreenshotsTask.TASK_NAME}"
 
     @Before
@@ -34,10 +34,10 @@ class IntegrationTests {
     @Test
     fun task_runs() {
         val result = gradleRunner()
-                .withArguments(reporterTaskName)
+                .withArguments(pullTaskName)
                 .build()
 
-        val task = result.task(reporterTaskName)
+        val task = result.task(pullTaskName)
         val taskOutcome = task?.outcome
         assertThat(taskOutcome).isEqualTo(TaskOutcome.SUCCESS)
     }
@@ -45,12 +45,12 @@ class IntegrationTests {
     @Test
     fun task_generates_output_files() {
         gradleRunner()
-                .withArguments(reporterTaskName)
+                .withArguments(pullTaskName)
                 .build()
 
         val outputReportDirectory = projectDir.resolve("build")
-                .resolve(ReportScreenshotsTask.REPORTS_FOLDER)
-                .resolve(ReportScreenshotsTask.REPORTS_SUBFOLDER)
+                .resolve(PullScreenshotsTask.REPORTS_FOLDER)
+                .resolve(PullScreenshotsTask.REPORTS_SUBFOLDER)
         assertThat(outputReportDirectory.exists())
                 .isTrue()
     }
@@ -61,11 +61,11 @@ class IntegrationTests {
                 .withArguments("generateScreenshots")
                 .build()
 
-        val reporterTask = result.task(reporterTaskName)
+        val pullTask = result.task(pullTaskName)
         val setupTask = result.task(setupTaskName)
         val customTask = result.task(":dummyTask")
 
-        assertThat(reporterTask?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+        assertThat(pullTask?.outcome).isEqualTo(TaskOutcome.SUCCESS)
         assertThat(setupTask?.outcome).isEqualTo(TaskOutcome.SUCCESS)
         assertThat(customTask?.outcome).isNotNull()
     }

@@ -46,22 +46,22 @@ open class ScreenshotReporterPlugin : Plugin<Project> {
                 }
         project.tasks.add(setupTask)
 
-        val reporterTask = project.createTask(
-                type = ReportScreenshotsTask::class,
-                name = ReportScreenshotsTask.TASK_NAME,
+        val pullTask = project.createTask(
+                type = PullScreenshotsTask::class,
+                name = PullScreenshotsTask.TASK_NAME,
                 description = "Downloads screenshots from the device")
                 .apply {
                     appPackage = packageName
                 }
-        project.tasks.add(reporterTask)
+        project.tasks.add(pullTask)
 
         val generateTask = project.createTask(
                 type = DefaultTask::class,
                 name = "generateScreenshots",
-                dependsOn = listOf(setupTask, screenshotsTask, reporterTask)
+                dependsOn = listOf(setupTask, screenshotsTask, pullTask)
         )
         project.tasks.add(generateTask)
-        reporterTask.mustRunAfter(screenshotsTask)
+        pullTask.mustRunAfter(screenshotsTask)
         screenshotsTask.mustRunAfter(setupTask)
     }
 

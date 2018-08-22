@@ -52,7 +52,7 @@ class ScreenshotReporterTest {
     fun `pull files when device has files`() {
         givenDeviceHasReportFiles()
 
-        screenshotReporter.reportScreenshots(outputFolder)
+        screenshotReporter.pullScreenshots(outputFolder)
         val exportedFiles = outputFolder.listFiles()
         val exportedFileNames = exportedFiles.map { it.name }
 
@@ -65,7 +65,7 @@ class ScreenshotReporterTest {
         givenDeviceHasReportFiles()
         screenshotReporter.cleanScreenshotsFromDevice()
 
-        screenshotReporter.reportScreenshots(outputFolder)
+        screenshotReporter.pullScreenshots(outputFolder)
         val exportedFiles = outputFolder.listFiles()
 
         assertThat(exportedFiles)
@@ -77,7 +77,7 @@ class ScreenshotReporterTest {
         givenOutputFolderHasOldFiles()
 
         screenshotReporter.cleanScreenshotsFromDevice()
-        screenshotReporter.reportScreenshots(outputFolder)
+        screenshotReporter.pullScreenshots(outputFolder)
         val exportedFiles = outputFolder.listFiles()
 
         assertThat(exportedFiles)
@@ -90,7 +90,7 @@ class ScreenshotReporterTest {
                 .that(nonExistentOutputFolder.exists())
                 .isFalse()
 
-        screenshotReporter.reportScreenshots(nonExistentOutputFolder)
+        screenshotReporter.pullScreenshots(nonExistentOutputFolder)
 
         assertWithMessage("Output folder has not been created")
                 .that(nonExistentOutputFolder.exists())
