@@ -53,7 +53,7 @@ class ScreenshotReporterTest {
         givenDeviceHasReportFiles()
 
         screenshotReporter.reportScreenshots(outputFolder)
-        val exportedFiles = outputFolder.resolve(DEVICE_SCREENSHOT_DIR).listFiles()
+        val exportedFiles = outputFolder.listFiles()
         val exportedFileNames = exportedFiles.map { it.name }
 
         assertThat(exportedFileNames)
@@ -66,7 +66,7 @@ class ScreenshotReporterTest {
         screenshotReporter.cleanScreenshotsFromDevice()
 
         screenshotReporter.reportScreenshots(outputFolder)
-        val exportedFiles = outputFolder.resolve(DEVICE_SCREENSHOT_DIR).listFiles()
+        val exportedFiles = outputFolder.listFiles()
 
         assertThat(exportedFiles)
                 .isEmpty()
@@ -78,7 +78,7 @@ class ScreenshotReporterTest {
 
         screenshotReporter.cleanScreenshotsFromDevice()
         screenshotReporter.reportScreenshots(outputFolder)
-        val exportedFiles = outputFolder.resolve(DEVICE_SCREENSHOT_DIR).listFiles()
+        val exportedFiles = outputFolder.listFiles()
 
         assertThat(exportedFiles)
                 .isEmpty()
