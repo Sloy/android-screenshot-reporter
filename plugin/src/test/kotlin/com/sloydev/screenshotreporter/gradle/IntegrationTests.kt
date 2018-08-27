@@ -48,9 +48,7 @@ class IntegrationTests {
                 .withArguments(pullTaskName)
                 .build()
 
-        val outputReportDirectory = projectDir.resolve("build")
-                .resolve(PullScreenshotsTask.REPORTS_FOLDER)
-                .resolve(PullScreenshotsTask.REPORTS_SUBFOLDER)
+        val outputReportDirectory = projectDir.resolve("build/reports/screenshots")
         assertThat(outputReportDirectory.exists())
                 .isTrue()
     }

@@ -1,7 +1,5 @@
 package com.sloydev.screenshotreporter.gradle
 
-import com.android.build.gradle.AppExtension
-import com.android.build.gradle.api.ApplicationVariant
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -20,40 +18,28 @@ open class ScreenshotReporterPlugin : Plugin<Project> {
         }
         val reporterExtension = project.extensions.create("screenshotsReporter", ReporterPluginExtension::class.java)
         project.afterEvaluate {
-            val appExtension = it.property("android") as AppExtension
-            appExtension.applicationVariants.all { variant: ApplicationVariant ->
-                if (variant.name == reporterExtension.buildVariant) {
-                    addTasks(it, variant, reporterExtension)
-                }
-            }
+            addTasks(it, reporterExtension)
         }
     }
 
-    private fun addTasks(project: Project, variant: ApplicationVariant, reporterExtension: ReporterPluginExtension) {
-        val packageName = variant.applicationId
-
-        val screenshotsTask: Task = reporterExtension.screenshotsTask?.let {
+    private fun addTasks(project: Project, reporterExtension: ReporterPluginExtension) {
+        val screenshotsTask: Task = reporterExtension.screenshotsTask.let {
             project.tasks.findByName(it)
         } ?: throw IllegalStateException("Task ${reporterExtension.screenshotsTask} not found")
 
         val setupTask = project.createTask(
                 type = SetupScreenshotsTask::class,
                 name = SetupScreenshotsTask.TASK_NAME,
-                description = "Setup the device to allow storing screenshots and clear any previous ones",
-                dependsOn = listOf(variant.install)) // install first to let us grant permissions
-                .apply {
-                    appPackage = packageName
-                }
+                description = "Setup the device to allow storing screenshots and clear any previous ones")
         project.tasks.add(setupTask)
+        setupTask.init(reporterExtension)
 
         val pullTask = project.createTask(
                 type = PullScreenshotsTask::class,
                 name = PullScreenshotsTask.TASK_NAME,
                 description = "Downloads screenshots from the device")
-                .apply {
-                    appPackage = packageName
-                }
         project.tasks.add(pullTask)
+        pullTask.init(reporterExtension)
 
         val generateTask = project.createTask(
                 type = DefaultTask::class,

@@ -55,9 +55,9 @@ android {
 task dummyTask()
 
 screenshotsReporter {
-    buildVariant 'debug'
     screenshotsTask "dummyTask"
+    outputFolder "screenshots"
+    externalStorageFolder "screenshots"
 }
 
-dependencies {
-}
+dependencies {}

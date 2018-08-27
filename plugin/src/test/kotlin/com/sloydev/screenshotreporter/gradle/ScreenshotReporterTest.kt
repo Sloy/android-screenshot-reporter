@@ -2,7 +2,6 @@ package com.sloydev.screenshotreporter.gradle
 
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
-import com.sloydev.screenshotreporter.gradle.ScreenshotReporter.Companion.DEVICE_SCREENSHOT_DIR
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -16,43 +15,22 @@ class ScreenshotReporterTest {
 
     lateinit var outputFolder: File
     lateinit var inputTestFolder: File
-    lateinit var nonExistentOutputFolder: File
 
-    val screenshotReporter = ScreenshotReporter("com.sloydev.screenshotreporter.testapp")
+    lateinit var screenshotReporter: ScreenshotReporter
 
     @Before
     fun setUp() {
-        outputFolder = temporaryFolder.newFolder("outputs")
+        outputFolder = temporaryFolder.root.resolve("outputs")
         inputTestFolder = temporaryFolder.newFolder("inputs")
-        nonExistentOutputFolder = temporaryFolder.root.resolve("another_output")
-    }
 
-    @Test
-    fun `returns working adb`() {
-        val adb = screenshotReporter.getAdb()
-
-        assertWithMessage("Adb is not connected")
-                .that(adb.isConnected)
-                .isTrue()
-    }
-
-    @Test
-    fun `returns devices`() {
-        val adb = screenshotReporter.getAdb()
-        val devices = adb.devices
-
-        assertWithMessage("No devices found")
-                .that(devices.asList())
-                .isNotEmpty()
-
-        devices.forEach { println(it) }
+        screenshotReporter = ScreenshotReporter(outputFolder, externalStoragePath)
     }
 
     @Test
     fun `pull files when device has files`() {
         givenDeviceHasReportFiles()
 
-        screenshotReporter.pullScreenshots(outputFolder)
+        screenshotReporter.pullScreenshots()
         val exportedFiles = outputFolder.listFiles()
         val exportedFileNames = exportedFiles.map { it.name }
 
@@ -65,7 +43,7 @@ class ScreenshotReporterTest {
         givenDeviceHasReportFiles()
         screenshotReporter.cleanScreenshotsFromDevice()
 
-        screenshotReporter.pullScreenshots(outputFolder)
+        screenshotReporter.pullScreenshots()
         val exportedFiles = outputFolder.listFiles()
 
         assertThat(exportedFiles)
@@ -77,7 +55,7 @@ class ScreenshotReporterTest {
         givenOutputFolderHasOldFiles()
 
         screenshotReporter.cleanScreenshotsFromDevice()
-        screenshotReporter.pullScreenshots(outputFolder)
+        screenshotReporter.pullScreenshots()
         val exportedFiles = outputFolder.listFiles()
 
         assertThat(exportedFiles)
@@ -87,25 +65,19 @@ class ScreenshotReporterTest {
     @Test
     fun `creates output folder when doesn't exist`() {
         assertWithMessage("Output folder already existed")
-                .that(nonExistentOutputFolder.exists())
+                .that(outputFolder.exists())
                 .isFalse()
 
-        screenshotReporter.pullScreenshots(nonExistentOutputFolder)
+        screenshotReporter.pullScreenshots()
 
         assertWithMessage("Output folder has not been created")
-                .that(nonExistentOutputFolder.exists())
+                .that(outputFolder.exists())
                 .isTrue()
-    }
-
-    @Test
-    fun `grant permission on marshmallow`() {
-        screenshotReporter.grantPermissions()
-        //WARNING: This test will never fail :( How can we check the behavior?
     }
 
     private fun givenOutputFolderHasOldFiles() {
         arrayOf("old_file1.png", "old_file.png")
-                .map { outputFolder.resolve(DEVICE_SCREENSHOT_DIR).resolve(it) }
+                .map { outputFolder.resolve(it) }
                 .forEach {
                     it.mkdirs()
                     it.createNewFile()
@@ -122,10 +94,14 @@ class ScreenshotReporterTest {
                 inputTestFolder.resolve(it)
                         .apply { createNewFile() }
             }.forEach {
-                val deviceFile = getExternalStoragePath(this, DEVICE_SCREENSHOT_DIR) + "/" + it.name
+                val deviceFile = getExternalStoragePath(this, externalStoragePath) + "/" + it.name
                 println("device file: $deviceFile")
                 pushFile(it.absolutePath, deviceFile)
             }
         }
+    }
+
+    companion object {
+        private const val externalStoragePath = "app_spoon-screenshots"
     }
 }

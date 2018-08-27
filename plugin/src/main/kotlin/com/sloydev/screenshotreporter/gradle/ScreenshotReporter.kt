@@ -11,45 +11,43 @@ import java.io.File
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 
-
-class ScreenshotReporter(val appPackage: String) {
+class ScreenshotReporter(private val outputDir: File, private val externalStorageSubfolder: String) {
 
     companion object {
         val SDK = File(System.getenv("ANDROID_HOME"))
-        val DEVICE_SCREENSHOT_DIR = "app_spoon-screenshots"
         val MARSHMALLOW_API_LEVEL = 23
     }
 
-    fun pullScreenshots(outputDir: File) {
+    fun pullScreenshots() {
         outputDir.deleteRecursively()
         outputDir.mkdirs()
 
         val adb = getAdb()
         val singleDevice = getRunningDevice(adb)
-        pullDirectory(singleDevice, DEVICE_SCREENSHOT_DIR, outputDir)
-        simplifyDirectoryStructure(outputDir)
+        pullDirectory(singleDevice, externalStorageSubfolder, outputDir)
+        simplifyDirectoryStructure()
 
         println("Wrote screenshots report to file://${outputDir.absolutePath}")
     }
 
-    private fun simplifyDirectoryStructure(outputDir: File) {
-        outputDir.resolve(DEVICE_SCREENSHOT_DIR).listFiles().forEach { subDir ->
+    private fun simplifyDirectoryStructure() {
+        outputDir.resolve(externalStorageSubfolder).listFiles().forEach { subDir ->
             subDir.renameTo(outputDir.resolve(subDir.name))
         }
-        outputDir.resolve(DEVICE_SCREENSHOT_DIR).delete()
+        outputDir.resolve(externalStorageSubfolder).delete()
     }
 
     fun cleanScreenshotsFromDevice() {
         with(getRunningDevice(getAdb())) {
             val outputReceiver = CollectingOutputReceiver()
-            val externalPath = getExternalStoragePath(this, DEVICE_SCREENSHOT_DIR)
+            val externalPath = getExternalStoragePath(this, externalStorageSubfolder)
             val command = "rm -rf $externalPath"
 
             executeShellCommand(command, outputReceiver)
         }
     }
 
-    fun grantPermissions() {
+    fun grantPermissions(appPackage: String) {
         val device = getRunningDevice(getAdb())
         val apiLevel = device.getProperty("ro.build.version.sdk").toInt()
         if (apiLevel >= MARSHMALLOW_API_LEVEL) {
@@ -63,15 +61,6 @@ class ScreenshotReporter(val appPackage: String) {
         }
     }
 
-    fun getRunningDevice(adb: AndroidDebugBridge): IDevice {
-        val devices = adb.devices
-        check(devices.isNotEmpty(), { "No devices found" })
-        check(devices.size == 1, { "More than one device, not supported for now :(" })
-
-        val singleDevice = devices[0]
-        return singleDevice
-    }
-
     fun getAdb(): AndroidDebugBridge {
         val adbPath = SDK.resolve("platform-tools").resolve("adb")
 
@@ -81,48 +70,56 @@ class ScreenshotReporter(val appPackage: String) {
         waitForAdb(adb, Duration.ofSeconds(30))
         return adb
     }
+}
 
-    private fun waitForAdb(adb: AndroidDebugBridge, timeOut: Duration) {
-        var timeOutMs = timeOut.toMillis()
-        val sleepTimeMs = TimeUnit.SECONDS.toMillis(1)
-        while (!adb.hasInitialDeviceList() && timeOutMs > 0) {
-            try {
-                Thread.sleep(sleepTimeMs)
-            } catch (e: InterruptedException) {
-                throw RuntimeException(e)
-            }
+private fun getRunningDevice(adb: AndroidDebugBridge): IDevice {
+    val devices = adb.devices
+    check(devices.isNotEmpty(), { "No devices found" })
+    check(devices.size == 1, { "More than one device, not supported for now :(" })
 
-            timeOutMs -= sleepTimeMs
+    val singleDevice = devices[0]
+    return singleDevice
+}
+
+private fun waitForAdb(adb: AndroidDebugBridge, timeOut: Duration) {
+    var timeOutMs = timeOut.toMillis()
+    val sleepTimeMs = TimeUnit.SECONDS.toMillis(1)
+    while (!adb.hasInitialDeviceList() && timeOutMs > 0) {
+        try {
+            Thread.sleep(sleepTimeMs)
+        } catch (e: InterruptedException) {
+            throw RuntimeException(e)
         }
-        if (timeOutMs <= 0 && !adb.hasInitialDeviceList()) {
-            throw RuntimeException("Timeout getting device list.")
-        }
+
+        timeOutMs -= sleepTimeMs
     }
-
-    private fun pullDirectory(device: IDevice, name: String, outputDir: File) {
-        // Output path on private internal storage, for KitKat and below.
-        //val internalDir = getDirectoryOnInternalStorage(name)
-        //println("Internal path is " + internalDir.getFullPath())
-
-        // Output path on public external storage, for Lollipop and above.
-        val externalDir = getDirectoryOnExternalStorage(device, name)
-        println("External path is " + externalDir.getFullPath())
-
-        // Sync test output files to the local filesystem.
-        println("Pulling files from external dir on [${device.serialNumber}]")
-        val localDirName = outputDir.absolutePath
-        adbPull(device, externalDir, localDirName)
-
-        //println("Pulling files from internal dir on [${device.serialNumber}]")
-        //adbPull(device, internalDir, localDirName)
-        //println("Done pulling $name from on [${device.serialNumber}]")
+    if (timeOutMs <= 0 && !adb.hasInitialDeviceList()) {
+        throw RuntimeException("Timeout getting device list.")
     }
+}
 
+private fun pullDirectory(device: IDevice, name: String, outputDir: File) {
+    // Output path on private internal storage, for KitKat and below.
+    //val internalDir = getDirectoryOnInternalStorage(name)
+    //println("Internal path is " + internalDir.getFullPath())
 
+    // Output path on public external storage, for Lollipop and above.
+    val externalDir: FileListingService.FileEntry = getDirectoryOnExternalStorage(device, name)
+    println("External path is " + externalDir.getFullPath())
+    println("Local path is " + outputDir.absolutePath)
+
+    // Sync test output files to the local filesystem.
+    println("Pulling files from external dir on [${device.serialNumber}]")
+    val localDirName = outputDir.absolutePath
+    adbPull(device, externalDir, localDirName)
+
+    //println("Pulling files from internal dir on [${device.serialNumber}]")
+    //adbPull(device, internalDir, localDirName)
+    //println("Done pulling $name from on [${device.serialNumber}]")
 }
 
 private fun getDirectoryOnExternalStorage(device: IDevice, dir: String): FileListingService.FileEntry {
-    val externalPath = getExternalStoragePath(device, dir)
+    val externalPath: String = getExternalStoragePath(device, dir)
     return obtainDirectoryFileEntry(externalPath)
 }
 
@@ -135,8 +132,9 @@ fun getExternalStoragePath(device: IDevice, path: String): String {
 /** Get a [FileEntry] for an arbitrary path.  */
 private fun obtainDirectoryFileEntry(path: String): FileListingService.FileEntry {
     // Dark magic here
-    val constructor = FileListingService.FileEntry::class.java.getDeclaredConstructor(FileListingService.FileEntry::class.java, String::class.java, Int::class.javaPrimitiveType,
-            Boolean::class.javaPrimitiveType)
+    val constructor = FileListingService.FileEntry::class.java
+            .getDeclaredConstructor(FileListingService.FileEntry::class.java, String::class.java, Int::class.javaPrimitiveType,
+                    Boolean::class.javaPrimitiveType)
     constructor.isAccessible = true
 
     var lastEntry: FileListingService.FileEntry? = null
@@ -170,7 +168,6 @@ open class SyncProgressMonitorAdapter : SyncService.ISyncProgressMonitor {
     }
 
     override fun start(totalWork: Int) {
-
     }
 
     override fun stop() {
