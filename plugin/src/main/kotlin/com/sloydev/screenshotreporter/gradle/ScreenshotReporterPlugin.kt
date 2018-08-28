@@ -23,13 +23,18 @@ open class ScreenshotReporterPlugin : Plugin<Project> {
             val appExtension = it.property("android") as AppExtension
             appExtension.applicationVariants.all { variant: ApplicationVariant ->
                 if (variant.name == reporterExtension.buildVariant) {
-                    addTasks(it, variant, reporterExtension)
+                    addTasks(it, variant, reporterExtension, appExtension)
                 }
             }
         }
     }
 
-    private fun addTasks(project: Project, variant: ApplicationVariant, reporterExtension: ReporterPluginExtension) {
+    private fun addTasks(
+            project: Project,
+            variant: ApplicationVariant,
+            reporterExtension: ReporterPluginExtension,
+            appExtension: AppExtension
+    ) {
         val packageName = variant.applicationId
 
         val screenshotsTask: Task = reporterExtension.screenshotsTask?.let {
@@ -43,6 +48,7 @@ open class ScreenshotReporterPlugin : Plugin<Project> {
                 dependsOn = listOf(variant.install)) // install first to let us grant permissions
                 .apply {
                     appPackage = packageName
+                    sdkDirectory = appExtension.sdkDirectory
                 }
         project.tasks.add(setupTask)
 
@@ -52,6 +58,7 @@ open class ScreenshotReporterPlugin : Plugin<Project> {
                 description = "Downloads screenshots from the device")
                 .apply {
                     appPackage = packageName
+                    sdkDirectory = appExtension.sdkDirectory
                 }
         project.tasks.add(pullTask)
 

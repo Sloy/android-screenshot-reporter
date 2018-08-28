@@ -2,7 +2,7 @@ package com.sloydev.screenshotreporter.gradle
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-
+import java.io.File
 
 open class PullScreenshotsTask : DefaultTask() {
 
@@ -13,12 +13,13 @@ open class PullScreenshotsTask : DefaultTask() {
     }
 
     lateinit var appPackage: String
+    lateinit var sdkDirectory: File
 
     @TaskAction
     fun pullScreenshots() {
         check(appPackage != null, { "appPackage parameter is not set" })
 
-        ScreenshotReporter(appPackage)
+        ScreenshotReporter(appPackage, sdkDirectory)
                 .pullScreenshots(project.buildDir.resolve(REPORTS_FOLDER).resolve(REPORTS_SUBFOLDER))
     }
 

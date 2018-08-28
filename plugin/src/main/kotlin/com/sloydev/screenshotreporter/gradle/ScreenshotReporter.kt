@@ -11,11 +11,9 @@ import java.io.File
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 
-
-class ScreenshotReporter(val appPackage: String) {
+class ScreenshotReporter(val appPackage: String, val sdkDirectory: File) {
 
     companion object {
-        val SDK = File(System.getenv("ANDROID_HOME"))
         val DEVICE_SCREENSHOT_DIR = "app_spoon-screenshots"
         val MARSHMALLOW_API_LEVEL = 23
     }
@@ -73,7 +71,7 @@ class ScreenshotReporter(val appPackage: String) {
     }
 
     fun getAdb(): AndroidDebugBridge {
-        val adbPath = SDK.resolve("platform-tools").resolve("adb")
+        val adbPath = sdkDirectory.resolve("platform-tools").resolve("adb")
 
         AndroidDebugBridge.initIfNeeded(true)
         val adb = AndroidDebugBridge.createBridge(adbPath.absolutePath, false)
@@ -117,8 +115,6 @@ class ScreenshotReporter(val appPackage: String) {
         //adbPull(device, internalDir, localDirName)
         //println("Done pulling $name from on [${device.serialNumber}]")
     }
-
-
 }
 
 private fun getDirectoryOnExternalStorage(device: IDevice, dir: String): FileListingService.FileEntry {
@@ -170,7 +166,6 @@ open class SyncProgressMonitorAdapter : SyncService.ISyncProgressMonitor {
     }
 
     override fun start(totalWork: Int) {
-
     }
 
     override fun stop() {

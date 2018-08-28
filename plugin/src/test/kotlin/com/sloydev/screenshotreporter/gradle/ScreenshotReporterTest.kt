@@ -18,7 +18,7 @@ class ScreenshotReporterTest {
     lateinit var inputTestFolder: File
     lateinit var nonExistentOutputFolder: File
 
-    val screenshotReporter = ScreenshotReporter("com.sloydev.screenshotreporter.testapp")
+    val screenshotReporter = ScreenshotReporter("com.sloydev.screenshotreporter.testapp", File(System.getenv("ANDROID_HOME")))
 
     @Before
     fun setUp() {
