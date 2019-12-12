@@ -35,7 +35,13 @@ dependencies {
     testImplementation 'com.github.geowarin:docker-junit-rule:1.1.0'
 }
 
-tasks.findByPath('test').dependsOn('jar')
+tasks.named('test') {
+    dependsOn('jar')
+
+    if (!environment.containsKey("ANDROID_HOME")) {
+        environment("ANDROID_HOME", "${environment["HOME"]}/Library/Android/sdk")
+    }
+}
 
 test {
     testLogging {
