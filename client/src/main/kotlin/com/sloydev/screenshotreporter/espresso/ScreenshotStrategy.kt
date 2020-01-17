@@ -3,11 +3,11 @@ package com.sloydev.screenshotreporter.espresso
 import android.annotation.TargetApi
 import android.graphics.Bitmap
 import android.os.Build
-import android.support.test.InstrumentationRegistry
-import android.support.test.espresso.Espresso
-import android.support.test.espresso.Espresso.*
-import android.support.test.espresso.matcher.ViewMatchers
-import android.support.test.espresso.matcher.ViewMatchers.*
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.*
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.jraska.falcon.Falcon
 import com.sloydev.screenshotreporter.espresso.SleepViewAction.*
 import java.io.BufferedOutputStream

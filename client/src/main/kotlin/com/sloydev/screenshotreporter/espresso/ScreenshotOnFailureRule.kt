@@ -1,7 +1,7 @@
 package com.sloydev.screenshotreporter.espresso
 
-import android.support.test.espresso.Espresso
-import android.support.test.espresso.getCurrentFailureHandler
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.getCurrentFailureHandler
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement

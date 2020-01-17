@@ -16,17 +16,16 @@ apply plugin: 'com.sloydev.screenshot-reporter'
 apply plugin: 'composer'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "com.sloydev.screenshotreporter.testapp"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -40,12 +39,14 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.jraska:falcon:1.0.4'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'com.jraska:falcon:1.0.4'
 
-    androidTestCompile project(':client')
-    androidTestCompile "com.google.truth:truth:0.37"
-    androidTestCompile('com.schibsted.spain:barista:2.1.0') {
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.2.0"
+    androidTestImplementation 'androidx.test:rules:1.1.0'
+    androidTestImplementation project(':client')
+    androidTestImplementation "com.google.truth:truth:0.37"
+    androidTestImplementation('com.schibsted.spain:barista:2.1.0') {
         exclude group: 'com.android.support'
     }
 }
