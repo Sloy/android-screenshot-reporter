@@ -13,6 +13,7 @@ class ScreenshotReporterTest {
 
     @get:Rule
     val temporaryFolder = TemporaryFolder()
+//    val permanentFolder = File("test-files")
 
     lateinit var outputFolder: File
     lateinit var inputTestFolder: File
@@ -23,26 +24,20 @@ class ScreenshotReporterTest {
     @Before
     fun setUp() {
         outputFolder = temporaryFolder.newFolder("outputs")
+//        outputFolder = permanentFolder.resolve("outputs").also { it.mkdirs() }
         inputTestFolder = temporaryFolder.newFolder("inputs")
+//        inputTestFolder = permanentFolder.resolve("inputs").also { it.mkdirs() }
         nonExistentOutputFolder = temporaryFolder.root.resolve("another_output")
-    }
 
-    @Test
-    fun `returns working adb`() {
-        val adb = screenshotReporter.getAdb()
-
-        assertWithMessage("Adb is not connected")
-                .that(adb.isConnected)
-                .isTrue()
+        screenshotReporter.cleanScreenshotsFromDevice()
     }
 
     @Test
     fun `returns devices`() {
-        val adb = screenshotReporter.getAdb()
-        val devices = adb.devices
+        val devices = screenshotReporter.adb.devices()
 
         assertWithMessage("No devices found")
-                .that(devices.asList())
+                .that(devices)
                 .isNotEmpty()
 
         devices.forEach { println(it) }
@@ -57,7 +52,7 @@ class ScreenshotReporterTest {
         val exportedFileNames = exportedFiles.map { it.name }
 
         assertThat(exportedFileNames)
-                .containsAllOf("screenshot1.png", "screenshot2.png")
+                .containsAllOf("screenshot 1.png", "screenshot2.png")
     }
 
     @Test
@@ -113,19 +108,16 @@ class ScreenshotReporterTest {
     }
 
     private fun givenDeviceHasReportFiles() {
-        pushFilesToDevice(arrayOf("screenshot1.png", "screenshot2.png"))
+        pushFilesToDevice(arrayOf("screenshot 1.png", "screenshot2.png"))
     }
 
     private fun pushFilesToDevice(files: Array<String>) {
-        with(screenshotReporter.getAdb().devices[0]) {
-            files.map {
-                inputTestFolder.resolve(it)
-                        .apply { createNewFile() }
-            }.forEach {
-                val deviceFile = getExternalStoragePath(this, DEVICE_SCREENSHOT_DIR) + "/" + it.name
-                println("device file: $deviceFile")
-                pushFile(it.absolutePath, deviceFile)
-            }
-        }
+        val device = screenshotReporter.currentDevice
+        files.map {  inputTestFolder.resolve(it) }
+            .forEach { localTestFile -> localTestFile.createNewFile() }
+        val deviceFile = screenshotReporter.adb.getExternalStoragePath(device)
+            .resolve(DEVICE_SCREENSHOT_DIR)
+        println("Pushing \"${inputTestFolder.absolutePath}\" to device [${device.serialNumber}] on path \"${deviceFile}\"")
+        screenshotReporter.adb.pushFile(device, inputTestFolder, deviceFile)
     }
 }
