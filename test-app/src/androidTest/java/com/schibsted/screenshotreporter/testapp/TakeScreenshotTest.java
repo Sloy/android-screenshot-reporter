@@ -65,7 +65,7 @@ public class TakeScreenshotTest {
     @Test
     public void take_screenshot_with_name() throws Exception {
         File expectedFile = new File(screenshotsDirectory,
-                CLASS_NAME + "/take_screenshot_with_name/custom name.png");
+                CLASS_NAME + "/take_screenshot_with_name/custom name - weird - name.png");
 
         Screenshot.take("custom name");
 
@@ -91,7 +91,7 @@ public class TakeScreenshotTest {
         Screenshot.setUseFolders(false);
 
         File expectedFile = new File(screenshotsDirectory,
-                CLASS_NAME + " > take_screenshot_without_folders > no folders.png");
+                CLASS_NAME + " - take_screenshot_without_folders - no folders.png");
 
         Screenshot.take("no folders");
 

@@ -63,7 +63,7 @@ object Screenshot {
         val methodDirName: String? = if (useMethodSubdirectory) currentTest.methodName else null
         val classDirName: String = if (useSimpleClassName) currentTest.simpleClassName else currentTest.className
 
-        val dirSeparator = if (useFolders) "/" else " > "
+        val dirSeparator = if (useFolders) "/" else " - "
 
         val filePath = listOfNotNull(classDirName, methodDirName, fileName)
                 .joinToString(separator = dirSeparator)
